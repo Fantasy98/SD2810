@@ -178,6 +178,7 @@ function [geo] = new_wing(y, xle, xte, ca, xea, xcm, my, Jy, EI, GK, nelem)
   geo.jy = interp1(y, Jy, yt, 'spline');
 
   % the default wing does not have any lumped masses
+  % Which could be changed according to the case?
   geo.cmi = [];
   geo.cdm = [];
   geo.cmx = [];

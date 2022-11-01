@@ -13,11 +13,11 @@ nelem = 24;
 nnodes = nelem + 1;
 
 % lab wing dimensions and properties
-l =
-b =
-ba =
+l = 1600; % mm
+b = 175; % mm
+ba = 30; % mm
 mhinge =
-t =
+t = 3;
 rhop =
 E =
 G =
