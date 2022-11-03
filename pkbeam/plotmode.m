@@ -39,15 +39,17 @@ function plotmode(v)
   clf
   subplot(2,1,1)
   hold on
-    plot(yp, w, 'b')
-    title('Deformation of elastic axis')
-    ylabel('Deflection [m]')
+    plot(yp, w, 'b',"linewidth",1.5)
+    title('Deformation of elastic axis',"fontsize",25)
+    ylabel('Deflection [m]',"fontsize",15)
     box
   hold off
   subplot(2,1,2)
   hold on
-    plot(yp, t, 'r')
-    xlabel('Span coordinate [m]')
-    ylabel('Twist [deg]')
+    plot(yp, t, 'r',"linewidth",1.5)
+    xlabel('Span coordinate [m]',"fontsize",15)
+    ylabel('Twist [deg]',"fontsize",15)
     box
   hold off
+  %for save figure
+  %print -djpg Modeshape.jpg
