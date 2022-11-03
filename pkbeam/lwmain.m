@@ -51,13 +51,13 @@ fprintf("Offset s = %.2f m \n",s);
 
 % P the constrain added in the DOF
 %
-P = [0 0 0 1 0 0]';
-##K\ P(4:6)
-
+P = [0 0 0 -1 0 0]';
+v = K\ P(4:6);
+delta_estimate = v(1)
 % Compute the Inneria
 I= (2*b*t^3)/12
 % Deformation
-delta = P(4)*l^3 /(3*E*I)
+delta_theory = P(4)*l^3 /(3*E*I)
 
 % print free vibration frequencies
 [V,LAMBDA] = eig(K,M);
