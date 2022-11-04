@@ -9,23 +9,24 @@ clear all;
 
 % setup geometry and structural properties
 % number of finite elements requested should be a multiple of 3
-nelem = 1;
+nelem = 2;
 nnodes = nelem + 1;
 
 % lab wing dimensions and properties
 l =1.2; % m
 b = 0.2; % m
 ba = 0.03; % m
+ba = 0;
 % measured from lab
 mhinge = (40.3 + 38.78 + 20.06 + 6.39 + 28.92 + 20.06 + 10.39 + 4.08 + 5.57)/1000; % kg
-%mhinge = 0;
+mhinge = 0;
 t = 0.003;%m
 rhop = 200; % m^3/kg
 
 % A guess of E and G
 E = 20E9; % Gpa
 possion = 0.19;
-G = E/2*(1+possion)
+G = E/2*(1+possion);
 G = E/2;
 
 % definition matrix for discrete point masses to attach
@@ -38,7 +39,6 @@ dpm(2,:) =0;
 % set up linear constraints for clamped wing root
 %% Number of Degree of freedom
 ndof = 3*nnodes;
-B = [] ;
 B = eye(3,ndof);
 
 % C : Null space of B  Chapter 6.8
@@ -49,19 +49,28 @@ C = null(B);
 [M,K,Z,Qip,f,CRv,CRd,s] = labwing(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
 fprintf("Offset s = %.2f m \n",s);
 
+
 % P the constrain added in the DOF
 %
-P = [0 0 0 -1 0 0]';
-v = K\ P(4:6);
-delta_estimate = v(1)
+Pload = -1;
+P = zeros(ndof,1);
+P(end-2) = Pload;
+P_hat = P' * C
+v = K \ P_hat';
+delta_estimate = v(end-2)
+
 % Compute the Inneria
 I= (2*b*t^3)/12
+
 % Deformation
-delta_theory = P(4)*l^3 /(3*E*I)
+delta_theory = P(end-2)*l^3 /(3*E*I)
 
 % print free vibration frequencies
 [V,LAMBDA] = eig(K,M);
+Vhat = C * V;
 omega = sqrt(LAMBDA);
+
+
 ##fprintf("Eigen Frequencies are %.2f rad/s \n",LAMBDA);
 % show modeshapes
 
