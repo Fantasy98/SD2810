@@ -21,13 +21,13 @@ ba = 0;
 mhinge = (40.3 + 38.78 + 20.06 + 6.39 + 28.92 + 20.06 + 10.39 + 4.08 + 5.57)/1000; % kg
 mhinge = 0;
 t = 0.003;%m
-rhop = 200; % m^3/kg
+rhop = 200; % kg/m^3
 
 % A guess of E and G
-E = 20E9; % Gpa
-possion = 0.19;
+E = 22E9; % Gpa (from other group)
+possion = 0.2;
 G = E/2*(1+possion);
-G = E/2;
+%G = E/2;
 
 % definition matrix for discrete point masses to attach
 npmass = 0 ;
@@ -37,7 +37,7 @@ dpm(2,:) =0;
 % ....
 
 % set up linear constraints for clamped wing root
-%% Number of Degree of freedom
+% Number of Degree of freedom
 ndof = 3*nnodes;
 B = eye(3,ndof);
 
