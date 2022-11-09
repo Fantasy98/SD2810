@@ -94,4 +94,5 @@ air_rho = Qip.rho;
 % the inverse is the divergence pressure
 maxvalue = max(abs(diag(Pressure)));
 qDiv = 1 ./ maxvalue
+fprintf("The divergence pressure is %.2f /n", qDiv);
 VDiv = sqrt(2*qDiv/air_rho)
