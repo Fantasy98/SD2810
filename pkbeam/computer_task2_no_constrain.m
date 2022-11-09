@@ -9,7 +9,8 @@ clear all;
 
 % setup geometry and structural properties
 % number of finite elements requested should be a multiple of 3
-nelem = 1;
+nelem = 12;
+
 nnodes = nelem + 1;
 
 % lab wing dimensions and properties
@@ -21,13 +22,16 @@ ba = 0;
 mhinge = (40.3 + 38.78 + 20.06 + 6.39 + 28.92 + 20.06 + 10.39 + 4.08 + 5.57)/1000; % kg
 mhinge = 0;
 t = 0.003;%m
-rhop = 200; % m^3/kg
-
-% A guess of E and G
+rhop = 2000; % m^3/kg
+rhop = 1900;
+% A guess of E and G 
+E = 25E9;
+% Test Result
 E = 20E9; % Gpa
-possion = 0.19;
+% Assumed Possion Ratio
+possion = 0.3;
 G = E/2*(1+possion);
-G = E/2;
+%G = E/2;
 
 % definition matrix for discrete point masses to attach
 npmass = 0 ;
@@ -41,7 +45,7 @@ dpm(2,:) =0;
 ndof = 3*nnodes;
 B = eye(3,ndof);
 % Here we are testing condition without clamping
-B = [];
+%B = [];
 % retrieve system matrices
 [M,K,Z,Qip,f,CRv,CRd,s] = labwing(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
 
@@ -53,8 +57,8 @@ I= (2*b*t^3)/12
 % print free vibration frequencies
 [V,LAMBDA] = eig(K,M);
 Vhat = Z * V;
-omega = sqrt(LAMBDA);
-fprintf("Eigen Frequencies are %.2f rad/s \n",[omega(end-2,end-2),omega(end-1,end-1),omega(end,end)]);
+omega = sqrt(Z*LAMBDA)./(2*pi);
+% fprintf("Eigen Frequencies are %.2f rad/s \n",omega(1:5,1:5));
 
 % Compute beam mass per length
 my = rhop * b*t;
