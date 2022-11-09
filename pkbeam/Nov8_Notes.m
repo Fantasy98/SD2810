@@ -13,9 +13,9 @@ nelem = 5;
 nnodes = nelem + 1;
 
 % lab wing dimensions and properties
-l =1.2; % m
-b = 0.2; % m
-b = 0.28;
+l =1.6; % m
+b = 0.175; % m
+% b = 0.28;
 ba = 0.03; % m
 %ba = 0;
 % measured from lab
