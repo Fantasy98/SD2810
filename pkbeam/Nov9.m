@@ -87,12 +87,11 @@ omega = sqrt(abs(diag(LAMBDA)))./(2*pi);
 % For flat plate Cl_alpha = 2*pi
 
 A = Qip.Qtab(:,:,1);
-% Solve the divergence 
-[Shape,Pressure] = eig(A,K);
+[Modes,Pressure] = eig(A,K);
+qDiv = 1/max(abs(diag(Pressure)));
+fprintf("The divergence pressure is %.2f pa \n",qDiv);
 air_rho = Qip.rho;
-% Find the max eigenvalue and 
-% the inverse is the divergence pressure
-maxvalue = max(abs(diag(Pressure)));
-qDiv = 1 ./ maxvalue
-fprintf("The divergence pressure is %.2f /n", qDiv);
-VDiv = sqrt(2*qDiv/air_rho)
+UDiv = sqrt(2*qDiv/air_rho);
+
+
+fprintf("The divergence speed is %.2f m/s \n",UDiv);
