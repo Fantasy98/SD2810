@@ -13,19 +13,19 @@ nelem = 2;
 nnodes = nelem + 1;
 
 % lab wing dimensions and properties
-l =1.2; % m
-b = 0.2; % m
+l =1.6; % m
+b = 0.175; % m
 ba = 0.03; % m
 ba = 0;
 % measured from lab
 mhinge = (40.3 + 38.78 + 20.06 + 6.39 + 28.92 + 20.06 + 10.39 + 4.08 + 5.57)/1000; % kg
 mhinge = 0;
 t = 0.003;%m
-rhop = 200; % kg/m^3
+rhop = 2000; % kg/m^3
 
 % A guess of E and G
 E = 22E9; % Gpa (from other group)
-possion = 0.2;
+possion = 0.3;
 G = E/2*(1+possion);
 %G = E/2;
 
@@ -41,8 +41,6 @@ dpm(2,:) =0;
 ndof = 3*nnodes;
 B = eye(3,ndof);
 
-% C : Null space of B  Chapter 6.8
-C = null(B);
 
 % retrieve system matrices
 
@@ -55,8 +53,8 @@ fprintf("Offset s = %.2f m \n",s);
 Pload = -1;
 P = zeros(ndof,1);
 P(end-2) = Pload;
-P_hat = P' * C
-v = K \ P_hat';
+P_hat = Z' * P;
+v = K \ P_hat;
 delta_estimate = v(end-2)
 
 % Compute the Inneria
@@ -67,7 +65,7 @@ delta_theory = P(end-2)*l^3 /(3*E*I)
 
 % print free vibration frequencies
 [V,LAMBDA] = eig(K,M);
-Vhat = C * V;
+Vhat = Z * V;
 omega = sqrt(LAMBDA);
 
 
@@ -77,12 +75,12 @@ omega = sqrt(LAMBDA);
 ##plotmode(V);
 
 % stop here until the rest is implemented
-return;
 
-##% compute divergence speed
-##[udiv,zdiv] = divergence(K, Qip);
-##fprintf(1,'Divergence speed: %.2f m/s \n', udiv);
-##
+
+% compute divergence speed
+[udiv,zdiv] = divergence(K, Qip);
+fprintf(1,'Divergence speed: %.2f m/s \n', udiv);
+return;
 ##% compute reversal speed
 ##[urev,zrev] = reversal(K, Qip, f, CRv, CRd);
 ##fprintf(1,'Reversal speed: %.2f m/s \n', urev);
