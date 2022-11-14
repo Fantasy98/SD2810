@@ -68,10 +68,24 @@ A_eig = A - f*CRv./CRd;
 qrev = 1/max(diag(D));
 urev = sqrt(2*qrev/Qip.rho);
 
+% Plot the relation between speed and deformation,
+% One can observe that at ceratin "elbow" that the deformation of wing will be serious
+% The corresponding speed is so called reverse speed
+figure()
 plot(uv,deform_tip);
+hold on
+plot([urev,urev],[-1,1])
+hold off
+legend("Deformation","Reversal Velocity")
+xlabel("Speed (m/s)")
+ylabel("Deformation(m)")
 
 % The reversal speed should be less than divergence
 % The flutter velocity should be lower than the divergence
 % u_flutter = 16 
+% Flutter velocity is expected to be lower than reversal in the begining
+% Then we can improve it by adding concentrated mass on the wing
 % To put mass and imporve the flutter speed.
+udiv = divergence(K,Qip);
 fprintf("The reverse velocity is %.2f\n",urev);
+fprintf("The divergence velocity is %.2f\n",udiv);
