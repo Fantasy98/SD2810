@@ -24,9 +24,9 @@ t = 0.004;
 % which should be adjust after experiment !
 %################################
 mass = 3.585; % kg
-volume =l * b * t;
+volume =l * 2*b * t;
 rhop = mass/volume;
-
+fprintf("Test density is %.2f \n",rhop);
 
 
 % A guess of E and G 
