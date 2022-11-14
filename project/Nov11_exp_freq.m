@@ -11,9 +11,9 @@ nnodes = nelem + 1;
 
 % lab wing dimensions and properties
 l =1.6; % m
-l = 1.63;
+l = 1.63
 
-
+b = 0.175; % m
 b = 0.28/2;
 % Here we do not consider the aileron 
 %and mass of hinge since the test will be apply on the flat plate
@@ -31,13 +31,11 @@ fprintf("Test density is %.2f \n",rhop);
 
 % A guess of E and G 
 E = 25E9;
-E = 31.5E9
 % Assumed Possion Ratio
-% E = E * 2.5;
+E = E * 2.5;
 possion = 0.21;
 
 G = E/2*(1+possion);
-G = 5.52E9;
 %################################
 % From Dave
 % E = (25.944+5.4)*10^9;
