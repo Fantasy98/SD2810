@@ -5,7 +5,7 @@ clear all;
 
 % setup geometry and structural properties
 % number of finite elements requested should be a multiple of 3
-nelem = 24;
+nelem = 30;
 
 nnodes = nelem + 1;
 
@@ -33,7 +33,7 @@ rhop = mass/volume;
 E = 25E9;
 % Assumed Possion Ratio
 E = E * 2.5;
-possion = 0.03;
+possion = 0.21;
 
 G = E/2*(1+possion);
 %################################
@@ -51,9 +51,10 @@ dpm(2,:) =0;
 % Number of Degree of freedom
 ndof = 3*nnodes;
 % Clamped
-B = eye(3,ndof);
+% B = eye(3,ndof);
+% No constrain == Free
 B = [];
-% No constrain == Free 
+ 
 % Here we are testing condition without clamping
 
 % retrieve system matrices
@@ -69,12 +70,15 @@ I= (2*b*t^3)/12;
 Vhat = Z * V;
 omega = diag(sqrt(LAMBDA)./(2*pi));
 freq = real(omega(1:20));
+for i = 1:4
+    fprintf(" \n %.2d Frequency:  \n %.2frad/s \n %.2frad/s \n %.2frad/s \n",i,freq(1+3*i),...
+                                                                                    freq(2+3*i),...
+                                                                                    freq(3+3*i))
 
-fprintf("Bending frequencies from eigenvalue is %.2f rad/s \n",freq(1:3:16))
+    % fprintf(" 2 + 3N Bending frequencies is %.2f rad/s \n",freq(2+3*i))
 
-fprintf("Bending frequencies from eigenvalue is %.2f rad/s \n",freq(2:3:16))
-
-fprintf("Torsional frequencies from eigenvalue is %.2f rad/s \n",freq(3:3:16))
+    % fprintf(" 3 + 3N Torsional frequencies is %.2f rad/s \n",freq(3+3*i))
+end
 % Theoritical Formula for frequncies
 
 % fprintf("Analytical Solution of Frequencies: \n")
