@@ -20,14 +20,12 @@ t = 0.003;%m
 % The estimate data from David
 % which should be adjust after experiment !
 %################################
-rhop = 2000; % m^3/kg
-rhop = 1900;
-% A guess of E and G 
+rhop = 1963.7; % Measured Density
+% Measured E and G by viberation test
 E = 25E9;
-% Test Result
-E = 22E9; % Gpa
 % Assumed Possion Ratio
-possion = 0.3;
+E = E * 2.5;
+possion = 0.21;
 G = E/2*(1+possion);
 %################################
 
