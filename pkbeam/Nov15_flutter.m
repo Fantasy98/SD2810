@@ -44,8 +44,7 @@ fprintf("Offset s = %.2f m \n",s);
 % Plot how do eigenvalue change when k= 0 : 2 since max k in Qip.ktip is 2
 % set speed
 
-ev = eig(K,M);
-omega = sqrt(ev)/(2*pi);
+
 
 uf = 15;
 for ik = 1:length(Qip.ktab)
@@ -68,24 +67,48 @@ end
 % plot([0 2],[0 2]);
 % axis([0 2 0 2])
 
-
+ev = eig(K,M);
+omega = sqrt(ev)/(2*pi);
 uf = 15;
-for iu = 1:10
-qdyn = 0.5*Qip.rho*uf *uf;
-for imode = 1:4
-k = omega(imode)*b/uf;
-for iter = 1:10
-    Q = ipolQk(Qip,k);
-    phat2 = eig(qdyn*Q-K, M.*(uf/b)^2);
-    phat = sqrt(phat2);
-    phat = phat .* sign(imag(phat));
+for iu = 1:12
+    % At each speed, compute the dynamic pressure
+    for imode = 1:4
+    qdyn = 0.5*Qip.rho*uf *uf;
+    k = omega(imode)*b/uf;
+    
+        for iter = 1:10
+        % Interploation by given reduced frequency to derive aerodynamic force Q
+        Q = ipolQk(Qip,k);
+        % Solve eigenvalue problem to get non-dimensional laplace coefficient
+        phat2 = eig(qdyn*Q-K, M.*(uf/b)^2);
+        % the squre of phat is complex number
+        % Real part indicates the stability
+        % imag part indicates the oscillation frequency
+        phat = sqrt(phat2);
+        % pass the sign of imag part then it's easier to sort them
+        phat = phat .* sign(imag(phat));
 
-    % Sort the phat by ascending order and store the order of index
-    [psort ipsort] = sort(imag(phat));
-    k= imag(phat(ipsort(imode)))
-    pconv(imode,iu) = phat(ipsort(imode))
-    uvec(iu) = uf;
-    uf = uf+1
-end 
-end 
+        % Sort the phat by ascending order 
+        % and store the order of index
+        [psort ipsort] = sort(imag(phat));
+        % set k as the lower boundary for this iteration
+        k= imag(phat(ipsort(imode)));
+        % Store the phat
+        pconv(imode,iu) = phat(ipsort(imode));
+            
+        judge = real(pconv(:,iu)) < 0;
+            if length(unique(judge)) > 1
+                uflutter = uf;
+            end
+        
+        uvec(iu) = uf;
+        
+        end 
+    
+    
+    end
+    uf = uf+1;
 end
+fprintf("\nThe flutter speed is %.2f m/s \n",uflutter);
+fprintf("\nThe last four phats are\n");
+pconv(:,end)
