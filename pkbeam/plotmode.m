@@ -8,7 +8,7 @@ function plotmode(v)
 % (c) 2016 Dan Borglund <dodde@kth.se> and David Eller <dlr@kth.se>
 
   % constants
-  l = 1.2;
+  l = 1.6;
 
   % dimensions
   ndof = length(v);

@@ -56,11 +56,16 @@ v = (K-q*A)\(q*f*delta);
     % plotmode(v);
 
     % Plot deformation 
+v_all(iu,:) = v;
 deform_tip(iu) = v(end-2);
 uv(iu) = u;
 end
 % Plot the deformation VS velocity 
-plot(uv,deform_tip);
+figure(1)
+plot(uv,deform_tip,"linewidth",1.5);
+xlabel("Speed (m/s)","fontsize",12);
+ylabel("Deformation (m)","fontsize",12);
+
 
 % Compute the aileron reverse
 A_eig = A - f*CRv./CRd;
@@ -68,10 +73,21 @@ A_eig = A - f*CRv./CRd;
 qrev = 1/max(diag(D));
 urev = sqrt(2*qrev/Qip.rho);
 
-plot(uv,deform_tip);
+figure(2)
+set(get(gca, 'Title'), 'String', 'The deformation before reversal speed');
+plotmode(v_all(30,:));
+
+figure(3)
+set(get(gca, 'Title'), 'String', 'The deformation after reversal speed');
+plotmode(v_all(42,:));
 
 % The reversal speed should be less than divergence
 % The flutter velocity should be lower than the divergence
 % u_flutter = 16 
 % To put mass and imporve the flutter speed.
+[urev,zrev] = reversal(K,Qip,f,CRv,CRd);
 fprintf("The reverse velocity is %.2f\n",urev);
+figure(4)
+set(get(gca, 'Title'), 'String', 'The deformation at reversal speed');
+
+plotmode(zrev);
