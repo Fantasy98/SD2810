@@ -51,8 +51,19 @@ B = eye(3,ndof);
 [M,K,Z,Qip,f,CRv,CRd,s] = labwing(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
 fprintf("Offset s = %.2f m \n",s);
 
+% Derive the deflection VS speed
+% set angle of attack a0 = 1 
+
+
+
+
+
+
+
 % compute divergence speed
 [udiv,zdiv] = divergence(K, Qip);
+
+
 fprintf(1,'Divergence speed: %.2f m/s \n', udiv);
 return;
 

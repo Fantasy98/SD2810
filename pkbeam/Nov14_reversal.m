@@ -42,7 +42,7 @@ fprintf("Offset s = %.2f m \n",s);
 
 % set deflection of alieron 
 % The certia, set 
-delta = 1*pi/180; % rad/s
+delta = 1*pi/180; % rad
 % Set speed
 iu = 0; 
 for u = 15:.1:20
@@ -56,7 +56,7 @@ v = (K-q*A)\(q*f*delta);
     % plotmode(v);
 
     % Plot deformation 
-v_all(iu,:) = v;
+v_all(iu,:) = v;s
 deform_tip(iu) = v(end-2);
 uv(iu) = u;
 end
