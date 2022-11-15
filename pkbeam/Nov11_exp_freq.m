@@ -10,10 +10,7 @@ nelem = 30;
 nnodes = nelem + 1;
 
 % lab wing dimensions and properties
-l =1.6; % m
-l = 1.63;
-
-
+l = 1.63; % m
 b = 0.28/2;
 % Here we do not consider the aileron 
 %and mass of hinge since the test will be apply on the flat plate
@@ -73,7 +70,7 @@ Vhat = Z * V;
 omega = diag(sqrt(LAMBDA)./(2*pi));
 freq = real(omega(1:20));
 for i = 1:4
-    fprintf(" \n %.2d Frequency:  \n %.2frad/s \n %.2frad/s \n %.2frad/s \n",i,freq(1+3*i),...
+    fprintf(" \n Frequency-%.2d:  \n %.2frad/s \n %.2frad/s \n %.2frad/s \n",i,freq(1+3*i),...
                                                                                     freq(2+3*i),...
                                                                                     freq(3+3*i))
 
@@ -81,8 +78,12 @@ for i = 1:4
 
     % fprintf(" 3 + 3N Torsional frequencies is %.2f rad/s \n",freq(3+3*i))
 end
-% Theoritical Formula for frequncies
 
+fprintf("\n E=%.3E \n",E);
+fprintf("\n G=%.3E \n",G);
+fprintf("\n Material Density rho=%.4d kg/m^3 \n",rhop);
+
+% Theoritical Formula for frequncies
 % fprintf("Analytical Solution of Frequencies: \n")
 % 1. Bending frequency: 
 % Compute beam mass per length

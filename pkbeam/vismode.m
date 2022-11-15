@@ -38,6 +38,7 @@ function vismode(v,np)
   nshape = [1, nnode];
   yp = linspace(0.0, l, nnode);
 
+
   % Extract bending and torsion dofs section by section
   w = zeros(nshape);
   t = zeros(nshape);
@@ -45,6 +46,7 @@ function vismode(v,np)
     w(k) = v(1+3*(k-1)); % nodal deflection
     t(k) = v(3+3*(k-1)); % nodal twist
   end
+
 
   % compute le and te coordinates at spanwise locations of nodes
   xte = b * ones(nshape);

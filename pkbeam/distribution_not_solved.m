@@ -1,17 +1,11 @@
 
-% lwmain.m
-%
-% main program for aeroelastic analysis
-%
+% Given the deflection to plot the distribution
 % (c) 2004-2016 Dan Borglund <dodde@kth.se> and David Eller <dlr@kth.se>
 
 clear all;
 
 % setup geometry and structural properties
 % number of finite elements requested should be a multiple of 3
-nelem = 1;
-nnodes = nelem + 1;
-
 nelem = 24;
 nnodes = nelem + 1;
 
@@ -43,36 +37,24 @@ dpm(2,:) =0;
 ndof = 3*nnodes;
 B = eye(3,ndof);
 
-
 % retrieve system matrices
 
 [M,K,Z,Qip,f,CRv,CRd,s] = labwing(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
 fprintf("Offset s = %.2f m \n",s);
 
-
-% P the constrain added in the DOF
-%
-Pload = -1;
-P = zeros(ndof,1);
-P(end-2) = Pload;
-P_hat = P' * Z;
-v = K \ P_hat';
-
-% The mode to be plotted by plotmode() 
-v_mode  = Z * v;
-plotmode(v_mode(:,1))
-delta_estimate = v(end-2)
-
-% Compute the Inneria
-I= (2*b*t^3)/12;
-
-% Deformation
-delta_theory = P(end-2)*l^3 /(3*E*I)
-
-fprintf("The Analytical Solution is %.2f",delta_theory);
-% print free vibration frequencies
-[V,LAMBDA] = eig(K,M);
+[V,D] = eig(K,M);
 Vhat = Z * V;
-omega = sqrt(LAMBDA);
+v = Vhat(:,1);
 
+ndof = length(v);
+nnode = fix(ndof/3);
+nshape = [1, nnode];
+
+% Extract bending and torsion dofs section by section
+w = zeros(nshape);
+t = zeros(nshape);
+for k = 1:nnode
+  w(k) = v(1+3*(k-1)); % nodal deflection
+  t(k) = v(3+3*(k-1)); % nodal twist
+end
 

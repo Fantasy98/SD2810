@@ -42,7 +42,7 @@ fprintf("Offset s = %.2f m \n",s);
 
 % set deflection of alieron 
 % The certia, set 
-delta = 5*pi/180; % rad/s
+delta = 1*pi/180; % rad/s
 % Set speed
 iu = 0; 
 for u = 15:.1:20
@@ -62,7 +62,7 @@ uv(iu) = u;
 end
 % Plot the deformation VS velocity 
 figure(1)
-plot(uv,deform_tip,"linewidth",1.5);
+plot(uv,deform_tip,"linewidth",1.2);
 xlabel("Speed (m/s)","fontsize",12);
 ylabel("Deformation (m)","fontsize",12);
 
