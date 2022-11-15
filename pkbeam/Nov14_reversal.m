@@ -84,6 +84,8 @@ plotmode(v_all(42,:));
 % The reversal speed should be less than divergence
 % The flutter velocity should be lower than the divergence
 % u_flutter = 16 
+% Flutter velocity is expected to be lower than reversal in the begining
+% Then we can improve it by adding concentrated mass on the wing
 % To put mass and imporve the flutter speed.
 [urev,zrev] = reversal(K,Qip,f,CRv,CRd);
 fprintf("The reverse velocity is %.2f\n",urev);
