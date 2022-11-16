@@ -46,21 +46,21 @@ fprintf("Offset s = %.2f m \n",s);
 
 
 
-uf = 15;
-for ik = 1:length(Qip.ktab)
-    k= Qip.ktab(ik);
-    qdyn = 0.5*Qip.rho*uf *uf;
-    phat2 = eig(qdyn*Qip.Qtab(:,:,ik)-K, M.*(uf/b)^2);
-    phat = sqrt(phat2);
-    phat = phat .* sign(imag(phat));
+% uf = 15;
+% for ik = 1:length(Qip.ktab)
+%     k= Qip.ktab(ik);
+%     qdyn = 0.5*Qip.rho*uf *uf;
+%     phat2 = eig(qdyn*Qip.Qtab(:,:,ik)-K, M.*(uf/b)^2);
+%     phat = sqrt(phat2);
+%     phat = phat .* sign(imag(phat));
 
-    % Sort the phat by ascending order and store the order of index
-    [psort ipsort] = sort(imag(phat));
-    % Store it into the pmx
-    pmx(:,ik) = phat(ipsort);
-end
+%     % Sort the phat by ascending order and store the order of index
+%     [psort ipsort] = sort(imag(phat));
+%     % Store it into the pmx
+%     pmx(:,ik) = phat(ipsort);
+% end
 
-% figure();
+% figure(1);
 % % PLOT the k VS imag(phat) sorted  
 % plot(Qip.ktab,imag(pmx),".");
 % hold on 
@@ -70,10 +70,13 @@ end
 ev = eig(K,M);
 omega = sqrt(ev)/(2*pi);
 uf = 15;
-for iu = 1:12
+for iu = 1:20
+
     % At each speed, compute the dynamic pressure
     for imode = 1:4
+    % Compute dynamic pressure
     qdyn = 0.5*Qip.rho*uf *uf;
+    % Reduced freq definition: k = omega * b/u
     k = omega(imode)*b/uf;
     
         for iter = 1:10
@@ -107,8 +110,32 @@ for iu = 1:12
     
     
     end
-    uf = uf+1;
+    uf = uf+0.5;
 end
-fprintf("\nThe flutter speed is %.2f m/s \n",uflutter);
-fprintf("\nThe last four phats are\n");
-pconv(:,end)
+
+% Plot the root loot of each phat
+figure(2);
+for imode = 1:3
+plot( [0,real(pconv(imode,:))],...
+      [omega(imode).*b/uvec(1), imag(pconv(imode,:))],"o-","linewidth",1.5);
+
+hold on 
+end
+plot([0 0],[0 1],"k-","linewidth",1.5);
+axis([-0.5 0.5 0 0.5]);
+leg = legend({
+        "Root Loot of Mode 1",...
+        "Root Loot of Mode 2",...
+        "Root Loot of Mode 3",...
+        "Imag Axis"
+        });
+set(leg,"fontsize",16);
+xlabel("k");
+ylabel("Imp");
+
+
+
+
+
+
+

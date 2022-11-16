@@ -56,7 +56,7 @@ v = (K-q*A)\(q*f*delta);
     % plotmode(v);
 
     % Plot deformation 
-v_all(iu,:) = v;s
+v_all(iu,:) = v;
 deform_tip(iu) = v(end-2);
 uv(iu) = u;
 end
