@@ -197,6 +197,7 @@ function [geo] = new_wing(y, xle, xte, ca, xea, xcm, my, Jy, EI, GK, nelem)
 
 end
 
+
 function [geo] = attach_conmass(geo, dm, x, y, dJ)
 % [geo] = attach_conmass(geo, dm, x, y, dJ)
 %

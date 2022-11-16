@@ -4,7 +4,7 @@ clear all;
 
 % setup geometry and structural properties
 % number of finite elements requested should be a multiple of 3
-nelem = 24;
+nelem = 10;
 nnodes = nelem + 1;
 
 % lab wing dimensions and properties
@@ -70,7 +70,7 @@ fprintf("Offset s = %.2f m \n",s);
 ev = eig(K,M);
 omega = sqrt(ev)/(2*pi);
 uf = 15;
-for iu = 1:20
+for iu = 1:100
 
     % At each speed, compute the dynamic pressure
     for imode = 1:4
@@ -104,39 +104,57 @@ for iu = 1:20
                 uflutter = uf;
             end
         
-        uvec(iu) = uf;
+        
         
         end 
     
     
     end
-    uf = uf+0.5;
+    uvec(iu) = uf;
+    uf = uf+0.1;
+    
 end
 
 % Plot the root loot of each phat
 figure(2);
-for imode = 1:3
-plot( [0,real(pconv(imode,:))],...
-      [omega(imode).*b/uvec(1), imag(pconv(imode,:))],"o-","linewidth",1.5);
+for imode = 1:4
+plot( real(pconv(imode,:)),...
+      imag(pconv(imode,:)),"o-","linewidth",0.8,"markersize",4.5);
 
 hold on 
 end
 plot([0 0],[0 1],"k-","linewidth",1.5);
-axis([-0.5 0.5 0 0.5]);
+axis([-0.2 0.2 0 1]);
 leg = legend({
-        "Root Loot of Mode 1",...
-        "Root Loot of Mode 2",...
-        "Root Loot of Mode 3",...
+        "Root Locus of Mode 1",...
+        "Root Locus of Mode 2",...
+        "Root Locus of Mode 3",...
+        "Root Locus of Mode 4",...
         "Imag Axis"
         });
-set(leg,"fontsize",16);
-xlabel("k");
-ylabel("Imp");
+set(leg,"fontsize",8,"location","northwest");
+xlb =xlabel("k");
+ylb =ylabel("Imp");
+set([xlb,ylb],"fontsize",8);
 
 
-
-
-
+% Plot the real part of phat versus velocity
+figure(3)
+for imode = 1:4
+    plot(uvec, real(pconv(imode,:)),"o-","linewidth",0.8,"markersize",4.5);
+    hold on 
+    end
+plot([14 25],[0,0],"k-.","linewidth",1.5);
+leg = legend({
+        "Real part of Mode 1",...
+        "Real part of Mode 2",...
+        "Real part of Mode 3",...
+        "Real part of Mode 4",...
+        "Re(p) = 0"
+        });
+set(leg,"fontsize",8,"location","southeast");
+xlabel("u (m/s)");
+ylabel("Real(p)");
 
 
 
