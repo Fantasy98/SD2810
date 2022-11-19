@@ -6,7 +6,7 @@ clear all;
 
 % setup geometry and structural properties
 % number of finite elements requested should be a multiple of 3
-nelem = 10;
+nelem = 20;
 nnodes = nelem + 1;
 
 % lab wing dimensions and properties
@@ -46,7 +46,12 @@ fprintf("Offset s = %.2f m \n",s);
 %Let's start with a given load and compare to analytical result!
 Pload = -1;
 P = zeros(ndof,1);
+% Add a point load 
+
+P(end-2) = Pload;
+% Add a torque
 P(end) = Pload;
+
 P_hat = Z' * P;
 v = K \ P_hat;
 
@@ -95,7 +100,7 @@ ylabel("Normal Stress (pa)","fontsize",8)
 
 subplot(2,1,2);
 plot(yp,Mx(end:-1:1),"bs-","linewidth",1.5)
-title("Moment Distribution","fontsize",15)
+title("Bending Moment Distribution","fontsize",15)
 ylabel("Moment (N*m)","fontsize",8)
 
 
@@ -114,3 +119,12 @@ ylabel("Shear Force (N*m)","fontsize",8)
 
 figure(3)
 plotmode(v);
+
+% Minimum Safety Factor = Ultimate_stress/ max_Allowed_stress
+% In our case, since the material property is similar to Aluminum, we can assume 
+% Assume the ultimate stress is identical to alumn's 
+Ultimate = 90e6;
+factor_normal = Ultimate / max(abs(sigma));
+factor_shear = Ultimate / max(abs(tau(2:end)));
+fprintf("Minimum Safety factor of normal stress is %.2f\n", factor_normal)
+fprintf("Minimum Safety factor of shear stress is %.2f\n", factor_shear)
