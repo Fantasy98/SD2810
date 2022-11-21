@@ -28,7 +28,7 @@ function [pu,vu] = pk_bisect(ieig,u,M,K,Qip,kbounds)
   Mr = (u/b)^2 * M;
 
   % dynamic pressure
-  qoo = 0.5*Qip.rho*u^2;
+  qoo = 0.5*Qip.rho*u*u;
 
   % upper/lower bounds
   klow = kbounds(ieig);
@@ -46,19 +46,24 @@ function [pu,vu] = pk_bisect(ieig,u,M,K,Qip,kbounds)
     % to the eigenvalue with index ieig (argument) and the corresponding
     % complex eigenvector v.
     
-<<<<<<< HEAD
-=======
     % retrive Qk
     Qk = ipolQk(Qip,k);
-    
->>>>>>> 0c1be227b77fd307d6978ac6f393ec3b483c416f
-    v =
-    p =
+    % Solve eigenvalue problem
+    Kr = qoo*Qk-K;
+    phat2 = eig(Kr, Mr);
+    phat = sqrt(phat2);
+    phat = phat .* sign(imag(phat));
+    [psort,ipsort] = sort(imag(phat));
+
+%% Question: How to derive the eigenvector ? As long as I pass two output to the eig(), the phat2 will become 0
+    v = 0;
+    p = phat(ipsort(ieig));
+
     imp = imag(p);                 % imaginary part of current p
     if imp > k                     % then k new lower bound
-      klow = k;                    % update lower bound
+      klow = imp;                    % update lower bound
     elseif imp <= k                % then k new upper bound
-      kupp = k;                    % update upper bound
+      kupp = imp;                    % update upper bound
     end
     converged = (kupp-klow) < ktol;  % eigenvalue bounded to within ktol?
   end

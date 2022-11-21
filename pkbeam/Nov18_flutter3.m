@@ -85,12 +85,12 @@ plot([0 2],[0 2]);
 axis([0 2 0 2]);
 
 %% Explain spy(Qip.Qtab(:,:,1))
-figure(2)
-spy(Qip.Qtab(:,:,1))
+% figure(2)
+% spy(Qip.Qtab(:,:,1))
 
-% Just aerppdynamic matrix 
-figure(3)
-spy(Qip.Qtab(:,:,2))
+% % Just aerppdynamic matrix 
+% figure(3)
+% spy(Qip.Qtab(:,:,2))
 
 
 % dlm : detailed aerodynamic model
