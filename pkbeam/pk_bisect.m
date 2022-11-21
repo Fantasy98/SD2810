@@ -46,6 +46,12 @@ function [pu,vu] = pk_bisect(ieig,u,M,K,Qip,kbounds)
     % to the eigenvalue with index ieig (argument) and the corresponding
     % complex eigenvector v.
     
+<<<<<<< HEAD
+=======
+    % retrive Qk
+    Qk = ipolQk(Qip,k);
+    
+>>>>>>> 0c1be227b77fd307d6978ac6f393ec3b483c416f
     v =
     p =
     imp = imag(p);                 % imaginary part of current p

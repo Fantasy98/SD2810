@@ -4,7 +4,7 @@ clear all;
 
 % setup geometry and structural properties
 % number of finite elements requested should be a multiple of 3
-nelem = 10;
+nelem = 24;
 nnodes = nelem + 1;
 
 % lab wing dimensions and properties
@@ -46,6 +46,58 @@ fprintf("Offset s = %.2f m \n",s);
 
 
 
+uf = 15;
+% If now we compute the uf as divergence 
+% The flutter probelm has one solution for divergence
+[udiv,zdiv] = divergence(K,Qip)
+uf = udiv
+for ik = 1:length(Qip.ktab)
+    k= Qip.ktab(ik);
+    qdyn = 0.5*Qip.rho*uf *uf;
+    phat2 = eig(qdyn*Qip.Qtab(:,:,ik)-K, M.*(uf/b)^2);
+    phat = sqrt(phat2);
+    phat = phat .* sign(imag(phat));
+
+    % Sort the phat by ascending order and store the order of index
+    [psort ipsort] = sort(imag(phat));
+    % Store it into the pmx
+    pmx(:,ik) = phat(ipsort);
+end
+
+
+
+% To debug programme , use pk_bound plot the k
+u = uf;
+% how many eigenvalue you used here
+neig = 4;
+[kbounds] = pk_bounds(u,M,K,Qip,neig)
+
+
+
+
+
+figure(1);
+% PLOT the k VS imag(phat) sorted  
+plot(Qip.ktab,imag(pmx),".");
+hold on 
+plot(kbounds,kbounds,"r*","markersize",8);
+plot([0 2],[0 2]);
+axis([0 2 0 2]);
+
+%% Explain spy(Qip.Qtab(:,:,1))
+figure(2)
+spy(Qip.Qtab(:,:,1))
+
+% Just aerppdynamic matrix 
+figure(3)
+spy(Qip.Qtab(:,:,2))
+
+
+% dlm : detailed aerodynamic model
+load dlmqip
+% if you have 24 elements of FEM, 
+% you can compare the result with dlmpiq 
+% dont forget the constrain for Qdlm.Qtab(75*75)
 % uf = 15;
 % for ik = 1:length(Qip.ktab)
 %     k= Qip.ktab(ik);
@@ -67,7 +119,16 @@ fprintf("Offset s = %.2f m \n",s);
 % plot([0 2],[0 2]);
 % axis([0 2 0 2])
 
-ev = eig(K,M);
+%%%%%% Reduce computation efforts
+% Reduced size 
+[V,D] = eig(K,M);
+ev = diag(D);
+nmode = 6;
+% New basis
+
+Zm = V(:,1:nmode);
+Km = Zm'*K*Zm;
+Mm = Zm'* M * Zm;
 omega = sqrt(ev)/(2*pi);
 uf = 15;
 for iu = 1:100
@@ -83,7 +144,7 @@ for iu = 1:100
         % Interploation by given reduced frequency to derive aerodynamic force Q
         Q = ipolQk(Qip,k);
         % Solve eigenvalue problem to get non-dimensional laplace coefficient
-        phat2 = eig(qdyn*Q-K, M.*(uf/b)^2);
+        phat2 = eig(qdyn * Zm'*Q*Zm- Km, Mm.*(uf/b)^2);
         % the squre of phat is complex number
         % Real part indicates the stability
         % imag part indicates the oscillation frequency
@@ -115,48 +176,3 @@ for iu = 1:100
     uf = uf+0.1;
     
 end
-
-% Plot the root loot of each phat
-figure(2);
-for imode = 1:4
-plot( real(pconv(imode,:)),...
-      imag(pconv(imode,:)),"o-","linewidth",0.8,"markersize",4.5);
-
-hold on 
-end
-plot([0 0],[0 1],"k-","linewidth",1.5);
-axis([-0.2 0.2 0 1]);
-leg = legend({
-        "Root Locus of Mode 1",...
-        "Root Locus of Mode 2",...
-        "Root Locus of Mode 3",...
-        "Root Locus of Mode 4",...
-        "Imag Axis"
-        });
-set(leg,"fontsize",8,"location","northwest");
-xlb =xlabel("k");
-ylb =ylabel("Imp");
-set([xlb,ylb],"fontsize",8);
-
-
-% Plot the real part of phat versus velocity
-% Also called VG plot
-figure(3)
-for imode = 1:4
-    plot(uvec, real(pconv(imode,:)),"o-","linewidth",0.8,"markersize",4.5);
-    hold on 
-    end
-plot([14 25],[0,0],"k-.","linewidth",1.5);
-leg = legend({
-        "Real part of Mode 1",...
-        "Real part of Mode 2",...
-        "Real part of Mode 3",...
-        "Real part of Mode 4",...
-        "Re(p) = 0"
-        });
-set(leg,"fontsize",8,"location","southeast");
-xlabel("u (m/s)");
-ylabel("Real(p)");
-
-
-
