@@ -5,7 +5,7 @@ clear all;
 
 % setup geometry and structural properties
 % number of finite elements requested should be a multiple of 3
-nelem = 30;
+nelem = 24;
 
 nnodes = nelem + 1;
 
@@ -28,13 +28,14 @@ fprintf("Test density is %.2f \n",rhop);
 
 % A guess of E and G 
 E = 25E9;
-E = 31.5E9
+E = 31.5E9;
 % Assumed Possion Ratio
 % E = E * 2.5;
 possion = 0.21;
 
 G = E/2*(1+possion);
 G = 5.52E9;
+
 %################################
 % From Dave
 % E = (25.944+5.4)*10^9;

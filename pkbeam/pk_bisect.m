@@ -45,7 +45,7 @@ function [pu,vu] = pk_bisect(ieig,u,M,K,Qip,kbounds)
     % Your code must compute the scalar variable p corresponding
     % to the eigenvalue with index ieig (argument) and the corresponding
     % complex eigenvector v.
-
+    
     v =
     p =
     imp = imag(p);                 % imaginary part of current p

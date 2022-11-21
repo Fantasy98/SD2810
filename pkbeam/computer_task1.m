@@ -13,21 +13,22 @@ nelem = 1;
 nnodes = nelem + 1;
 
 % lab wing dimensions and properties
-l =1.2; % m
-b = 0.2; % m
+l =1.6; % m
+b = 0.175; % m
 ba = 0.03; % m
 ba = 0;
 % measured from lab
 mhinge = 0;
-t = 0.003;%m
-rhop = 1963.7; % Measured Density
-
+t = 0.004;%m
+% rhop = 1963.7; % Measured Density
+rhop = 2000;
 % Measured E and G by viberation test
 E = 25E9;
 % Assumed Possion Ratio
-E = E * 2.5;
-possion = 0.21;
-G = E/2*(1+possion);
+% E = E * 2.5;
+% possion = 0.21;
+% G = E/2*(1+possion);
+G = E;
 
 
 % definition matrix for discrete point masses to attach
@@ -61,16 +62,16 @@ v = K \ P_hat';
 
 % The mode to be plotted by plotmode() 
 v_mode  = Z * v;
-plotmode(v_mode(:,1))
-delta_estimate = v(end-2)
-
+plotmode(v_mode(:,1));
+delta_estimate = v(end-2);
+fprintf("The FEM solution is %.5f \n",delta_estimate);
 % Compute the Inneria
 I= (2*b*t^3)/12;
 
 % Deformation
-delta_theory = P(end-2)*l^3 /(3*E*I)
+delta_theory = P(end-2)*l^3 /(3*E*I);
 
-fprintf("The Analytical Solution is %.2f",delta_theory);
+fprintf("The Analytical Solution is %.5f\n",delta_theory);
 % print free vibration frequencies
 [V,LAMBDA] = eig(K,M);
 Vhat = Z * V;
