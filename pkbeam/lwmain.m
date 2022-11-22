@@ -24,8 +24,8 @@ mhinge = ( 2*(40.33+6.39+2)+...
             3*28.9)  % g
 mhinge = mhinge/1000; % kg 
 
-mhinge = 0;
-t = 0.003;%m
+% mhinge = 0;
+t = 0.004;%m
 rhop = 1963.7; % Measured Density
 
 % Measured E and G by viberation test

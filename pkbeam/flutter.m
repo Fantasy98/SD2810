@@ -9,9 +9,9 @@ function [ucrit,pcrit,zcrit] = flutter(M,K,Qip)
 %
 % (c) 2004-2016 Dan Borglund <dodde@kth.se> and David Eller <dlr@kth.se>
 
-
+  
   % set return values
-  ucrit =
+  ucrit = 
   pcrit =
   zcrit =
 

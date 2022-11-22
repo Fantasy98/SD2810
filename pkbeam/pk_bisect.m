@@ -50,20 +50,20 @@ function [pu,vu] = pk_bisect(ieig,u,M,K,Qip,kbounds)
     Qk = ipolQk(Qip,k);
     % Solve eigenvalue problem
     Kr = qoo*Qk-K;
-    phat2 = eig(Kr, Mr);
+    [V,D] = eig(Kr, Mr);
+    phat2 = diag(D);
     phat = sqrt(phat2);
     phat = phat .* sign(imag(phat));
     [psort,ipsort] = sort(imag(phat));
 
-%% Question: How to derive the eigenvector ? As long as I pass two output to the eig(), the phat2 will become 0
-    v = 0;
+    v = V(:,ipsort(ieig));
     p = phat(ipsort(ieig));
 
     imp = imag(p);                 % imaginary part of current p
     if imp > k                     % then k new lower bound
-      klow = imp;                    % update lower bound
+      klow = k;                    % update lower bound
     elseif imp <= k                % then k new upper bound
-      kupp = imp;                    % update upper bound
+      kupp = k;                    % update upper bound
     end
     converged = (kupp-klow) < ktol;  % eigenvalue bounded to within ktol?
   end

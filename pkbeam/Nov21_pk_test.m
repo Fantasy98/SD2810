@@ -5,7 +5,7 @@ clear all;
 
 % setup geometry and structural properties
 % number of finite elements requested should be a multiple of 3
-nelem = 10;
+nelem = 15;
 nnodes = nelem + 1;
 l =1.6; % m
 b = 0.175; % m
@@ -80,7 +80,7 @@ end
 % which means it can only solve for single mode 
 
 % Remain Question: How to derive the vector? 
-u = 15; 
+u = 13; 
 i = 0.5
 for iu = 1:15
     
@@ -125,7 +125,7 @@ for imode = 1:4
     plot(uvec, real(pconv(imode,:)),"o-","linewidth",0.8,"markersize",4.5);
     hold on 
     end
-plot([14 25],[0,0],"k-.","linewidth",1.5);
+plot([10 25],[0,0],"k-.","linewidth",1.5);
 leg = legend({
         "Real part of Mode 1",...
         "Real part of Mode 2",...
@@ -136,3 +136,4 @@ leg = legend({
 set(leg,"fontsize",8,"location","southeast");
 xlabel("u (m/s)");
 ylabel("Real(p)");
+axis([14 25]);
