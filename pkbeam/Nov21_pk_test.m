@@ -11,7 +11,9 @@ l =1.6; % m
 b = 0.175; % m
 ba = 0.03 ;
 
-mhinge = 0;
+% Here the mhinge is just mass of one rod 
+% In the function labwing, it will be tripped
+mhinge = 28e-3;
 t = 0.004;%m
 
 rhop = 1950; % Measured Density
@@ -23,12 +25,23 @@ G = 5.52E9;
 
 
 % definition matrix for discrete point masses to attach
-npmass = 0 ;
+npmass = 7 ;
+m1 = (40.33+6.39+2)/1000; %kg
+m2 = (20.06+2*2)/1000; %kg
+m3 = (40.33+2*6.39+2*2)/1000; %kg
+x_coord = (280-175)/1000;
 dpm = zeros(npmass,3);
-dpm(1,:) = 0;
-dpm(2,:) =0;
-% ....
+dpm(1,:) = [m1 x_coord 0];
+dpm(2,:) =[m2 x_coord 27/100];
+dpm(3,:) =[m3 x_coord  53/100];
+dpm(4,:) =[m2 x_coord  80/100];
+dpm(5,:) =[m2 x_coord  106/100];
+dpm(6,:) =[m2 x_coord 133/100];
+dpm(7,:) =[m2 x_coord 160/100];
 
+% Test before/after adding hingmass 
+% In theory, since hinges are after the elastic axis, the flutter speed should be decreased
+dpm = zeros(npmass,3);
 % set up linear constraints for clamped wing root
 % Number of Degree of freedom
 ndof = 3*nnodes;
