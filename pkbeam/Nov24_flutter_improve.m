@@ -104,6 +104,7 @@ for imode = 1:neig
         fprintf("Find the fultter mode is at mode  %.d \n",imode);
         % Corresponding the first loctation is flutter speed
         loc = loc_list(1);
+        p_flutter = pconv(imode,loc)
         % loc1 = 0;
             
     end
@@ -112,10 +113,14 @@ end
 if loc !=0
     uflutter = uvec(loc);
     fprintf("\nThe flutter speed is %.3f m/s \n",uflutter);
+    % Retrive the corresponding laplacian non-dimensional frequency
+    % The imag part is the  frequency omega        
+    f_flutter = imag(p_flutter) * uflutter/ (2*pi*Qip.bref);
+    fprintf("\nThe flutter frequency(imag part) is %.3f rad/s \n",f_flutter);
 else 
     uflutter = 0;
-    fprintf("Did not find the flutter speed yet! \n");
-    fprintf("Maximum Speed now is %.2f m/s\n",uvec(end));
+    fprintf("\nDid not find the flutter speed yet! \n");
+    fprintf("\nMaximum Speed now is %.2f m/s\n",uvec(end));
 end
 
 
@@ -124,7 +129,7 @@ end
 fprintf("\nReversal Speed  is %.2f m/s\n",urev);
 
 [udiv,zdiv] = divergence(K,Qip);
-fprintf("\Divergence Speed  is %.2f m/s\n",udiv);
+fprintf("\nDivergence Speed  is %.2f m/s\n",udiv);
 
 
 
