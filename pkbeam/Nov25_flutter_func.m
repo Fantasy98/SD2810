@@ -1,6 +1,4 @@
-% Nov 23 Improve the flutter speed by adding discrete mass on the wing
-% mhinge has been updated
-% pk_bounds and pk_bisect
+% Nov25 Test flutter function. 
 
 % Updated derivation of flutter speed
 clear all;
@@ -78,54 +76,13 @@ fprintf("Offset s = %.2f m \n",s);
 
 
 %#######################################
-% 1 Check flutter speed and compare with the divergence and reversal 
-% Note that ieig is the index of eigvalue, 
-% which means it can only solve for single mode 
-u = 15.5; 
-i = 0.05;
-neig = 3;
-for iu = 1:100
-    
-    [kbounds] = pk_bounds(u,M,K,Qip,neig);    
-    for ieig = 1:neig
-        [pu,vu] = pk_bisect(ieig,u,M,K,Qip,kbounds);
-        pconv(ieig,iu) = pu;
-        Vu(ieig,iu,:) = vu;
-    end
-    
-    u = u + i;
-    uvec(iu) = u;
-end
+[ucrit,pcrit,zcrit] = flutter(M,K,Qip);
 
-% Compute the flutter speed and which mode corresponding to flutter mode
-for imode = 1:neig
-    % Find if the real part of phat >0
-    loc_list = find( real(pconv(imode,:))>0 );
-    % If exist, the number of coloum will no longer be 0
-    if size(loc_list,2) > 0
-        fprintf("Find the fultter mode is at mode  %.d \n",imode);
-        % Corresponding the first loctation is flutter speed
-        loc = loc_list(1);
-        p_flutter = pconv(imode,loc)
-        % loc1 = 0;
-            
-    end
-end
+fprintf("\nFlutter Speed  is %.2f m/s\n",ucrit);
+fprintf("\nFlutter Frequency  is %.2f rad/s\n",pcrit);
 
-if loc !=0
-    uflutter = uvec(loc);
-    fprintf("\nThe flutter speed is %.3f m/s \n",uflutter);
-    % Retrive the corresponding laplacian non-dimensional frequency
-    % The imag part is the  frequency omega        
-    f_flutter = imag(p_flutter) * uflutter/ (2*pi*Qip.bref);
-    fprintf("\nThe flutter frequency(imag part) is %.3f rad/s \n",f_flutter);
-else 
-    uflutter = 0;
-    fprintf("\nDid not find the flutter speed yet! \n");
-    fprintf("\nMaximum Speed now is %.2f m/s\n",uvec(end));
-end
-
-
+% Visualize the mode
+vismode(zcrit);
 
 [urev,zrev] = reversal(K,Qip,f,CRv,CRd);
 fprintf("\nReversal Speed  is %.2f m/s\n",urev);
