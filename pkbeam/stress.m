@@ -6,7 +6,7 @@ clear all;
 
 % setup geometry and structural properties
 % number of finite elements requested should be a multiple of 3
-nelem = 20;
+nelem = 10;
 nnodes = nelem + 1;
 
 % lab wing dimensions and properties
@@ -26,12 +26,26 @@ G = 5.52E9;
 
 
 % definition matrix for discrete point masses to attach
-npmass = 0 ;
-dpm = zeros(npmass,3);
-dpm(1,:) = 0;
-dpm(2,:) =0;
-% ....
+npmass = 12 ;
 
+m1 = (40.33+6.39+2)/1000; %kg
+m2 = (20.06+2*2)/1000; %kg
+m3 = (40.33+2*6.39+2*2)/1000; %kg
+% According to the photo
+x_coord = (280-175)/1000;
+
+% extra mass we can use to improve flutter speed
+m_extra = [50 100 150]/1000;
+
+% Fixed mass
+dpm = zeros(npmass,3);
+dpm(1,:) = [m1 x_coord 0];
+dpm(2,:) =[m2 x_coord 27/100];
+dpm(3,:) =[m3 x_coord  53/100];
+dpm(4,:) =[m2 x_coord  80/100];
+dpm(5,:) =[m2 x_coord  106/100];
+dpm(6,:) =[m2 x_coord 133/100];
+dpm(7,:) =[m2 x_coord 160/100];
 % set up linear constraints for clamped wing root
 % Number of Degree of freedom
 ndof = 3*nnodes;
@@ -48,9 +62,9 @@ Pload = -1;
 P = zeros(ndof,1);
 % Add a point load 
 
-P(end-2) = Pload;
-% Add a torque
-P(end) = Pload;
+P(1:4:end-2) = Pload;
+% % Add a torque
+% P(end) = Pload;
 
 P_hat = Z' * P;
 v = K \ P_hat;
