@@ -33,7 +33,7 @@ function [ucrit,pcrit,zcrit] = flutter(M,K,Qip)
         nmode = imode;
         % Corresponding the first loctation is flutter speed
         loc = loc_list(1);
-        p_flutter = pconv(imode,loc)
+        p_flutter = pconv(imode,loc);
         % loc1 = 0;
             
     end
