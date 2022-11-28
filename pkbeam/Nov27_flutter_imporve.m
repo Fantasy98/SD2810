@@ -1,4 +1,6 @@
-% Nov25 Test flutter function. 
+% Nov 23 Improve the flutter speed by adding discrete mass on the wing
+% mhinge has been updated
+% pk_bounds and pk_bisect
 
 % Updated derivation of flutter speed
 clear all;
@@ -48,12 +50,14 @@ dpm(7,:) =[m2 x_coord 160/100];
 
 % To improve flutter speed
 % Adding extra discrete mass on the wing 
-x_coord_extra = x_coord;
-% x_coord_extra = b/2;
-dpm(9,:) = [m_extra(2) -x_coord_extra l/4];
-dpm(10,:) = [m_extra(2) -x_coord_extra l/2];
-dpm(11,:) = [m_extra(2) -x_coord_extra 3*l/4];
-dpm(12,:) = [m_extra(2) -x_coord_extra l];
+% Note: There is no point for adding extra mass at tip and root! 
+
+% There is a solution but may not be the optimal for improving the flutter speed
+x_coord_extra = x_coord+0.06;
+
+dpm(8,:) = [3*m_extra(3) -x_coord_extra 4*l/5];
+dpm(11,:) = [3*m_extra(3) -x_coord_extra 5*l/6];
+
 % Test before/after adding hingmass 
 % In theory, since hinges are after the elastic axis, the flutter speed should be decreased
 % dpm = zeros(npmass,3);
@@ -73,8 +77,6 @@ B = eye(3,ndof);
 fprintf("Offset s = %.2f m \n",s);
 
 
-
-%#######################################
 [ucrit,pcrit,zcrit] = flutter(M,K,Qip);
 
 fprintf("\nFlutter Speed  is %.2f m/s\n",ucrit);
@@ -82,6 +84,7 @@ fprintf("\nFlutter Frequency  is %.2f rad/s\n",pcrit);
 
 % Visualize the mode
 vismode(zcrit);
+
 
 [urev,zrev] = reversal(K,Qip,f,CRv,CRd);
 fprintf("\nReversal Speed  is %.2f m/s\n",urev);

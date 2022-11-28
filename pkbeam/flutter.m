@@ -8,11 +8,11 @@ function [ucrit,pcrit,zcrit] = flutter(M,K,Qip)
 % Qip : aerodynamic loads interpolation struct
 %
 % (c) 2004-2016 Dan Borglund <dodde@kth.se> and David Eller <dlr@kth.se>
-  u = 15.5; 
-  i = 0.05;
+  u = 16; 
+  i = 0.1;
   % Since we know there are only 2 
   neig = 2;
-  for iu = 1:100
+  for iu = 1:50
       
       [kbounds] = pk_bounds(u,M,K,Qip,neig);    
       for ieig = 1:neig

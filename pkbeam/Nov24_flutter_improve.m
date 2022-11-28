@@ -97,6 +97,28 @@ for iu = 1:100
     uvec(iu) = u;
 end
 
+
+
+% Plot Root Locus
+figure(1);
+for i = 1:neig
+plot(real(pconv(i,:)),imag(pconv(i,:)),"o-","linewidth",0.8);
+hold on 
+end
+plot([0 0],[0 1],"k-","linewidth",1.5);
+axis([-0.2 0.2 0 0.5]);
+leg = legend({
+        "Root Locus of Mode 1",...
+        "Root Locus of Mode 2",...
+        "Root Locus of Mode 3",...
+        % "Root Locus of Mode 4",...
+        "Imag Axis"
+        });
+set(leg,"fontsize",8,"location","northwest");
+xlb =xlabel("k");
+ylb =ylabel("Imp");
+set([xlb,ylb],"fontsize",8);
+
 % Compute the flutter speed and which mode corresponding to flutter mode
 for imode = 1:neig
     % Find if the real part of phat >0

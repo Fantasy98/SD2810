@@ -1,6 +1,7 @@
 
-% lwmain.m
-%
+% Nov28 
+% Concept of Mass matrix
+% Primilary Experimet for validating the clamped wing in wind tunnel
 % main program for aeroelastic analysis
 %
 % (c) 2004-2016 Dan Borglund <dodde@kth.se> and David Eller <dlr@kth.se>
@@ -43,7 +44,7 @@ G = 5.52E9;
 % The format is dpm(i,:) = [mass x_coord y_coord]
 % 7 connection in total
 % From  root to tip = 1:7
-npmass = 7 ;
+npmass = 7
 m1 = (40.33+6.39+2)/1000; %kg
 m2 = (20.06+2*2)/1000; %kg
 m3 = (40.33+2*6.39+2*2)/1000; %kg
@@ -74,8 +75,8 @@ Vhat = Z * V;
 omega = diag(sqrt(LAMBDA)./(2*pi));
 freq = real(omega(1:20));
 
-for i = 1:4
-    fprintf(" \n Frequency-%.2d:  \n %.2frad/s \n %.2frad/s \n %.2frad/s \n",i,freq(1+3*i),...
+for i = 0:4
+    fprintf(" \n Frequency-%.2d:  \n %.2frad/s \n %.2frad/s \n %.2frad/s \n",i+1,freq(1+3*i),...
                                                                                     freq(2+3*i),...
                                                                                     freq(3+3*i))
 
