@@ -46,7 +46,7 @@ G = 5.52E9;
 % From  root to tip = 1:7
 npmass = 7
 m1 = (40.33+6.39+2)/1000; %kg
-m2 = (20.06+2*2)/1000; %kg
+m2 = (20.06+4.08+2*2)/1000; %kg
 m3 = (40.33+2*6.39+2*2)/1000; %kg
 x_coord = (280-175)/1000;
 dpm = zeros(npmass,3);
@@ -54,9 +54,9 @@ dpm(1,:) = [m1 x_coord 0];
 dpm(2,:) =[m2 x_coord 27/100];
 dpm(3,:) =[m3 x_coord  53/100];
 dpm(4,:) =[m2 x_coord  80/100];
-dpm(5,:) =[m2 x_coord  106/100];
+dpm(5,:) =[m3 x_coord  106/100];
 dpm(6,:) =[m2 x_coord 133/100];
-dpm(7,:) =[m2 x_coord 160/100];
+dpm(7,:) =[m1 x_coord 160/100];
 % ....
 
 % set up linear constraints for clamped wing root
