@@ -1,17 +1,17 @@
-function [ucrit,pcrit,zcrit] = flutter(M,K,Qip)
-% [ucrit,pcrit,zcrit] = flutter(M,K,Qip)
-%
+function [ucrit,pcrit,zcrit,pconv] = flutter(M,K,Qip,neig)
+% [ucrit,pcrit,zcrit] = flutter(M,K,Qip,neig)
+% pconv : All laplacian frequency computed
 % Compute flutter speed, frequency and critical mode.
 %
 % M : mass matrix
 % K : stiffness matrix
 % Qip : aerodynamic loads interpolation struct
-%
+% neig: number of eigenvector you want
 % (c) 2004-2016 Dan Borglund <dodde@kth.se> and David Eller <dlr@kth.se>
-  u = 16; 
+  u = 15; 
   i = 0.1;
   % Since we know there are only 2 
-  neig = 2;
+
   for iu = 1:50
       
       [kbounds] = pk_bounds(u,M,K,Qip,neig);    
@@ -31,7 +31,8 @@ function [ucrit,pcrit,zcrit] = flutter(M,K,Qip)
     if size(loc_list,2) > 0
         fprintf("Find the fultter mode is at mode  %.d \n",imode);
         nmode = imode;
-        % Corresponding the first loctation is flutter speed
+
+        %the first loctation is flutter speed
         loc = loc_list(1);
         p_flutter = pconv(imode,loc);
         % loc1 = 0;
@@ -42,6 +43,6 @@ function [ucrit,pcrit,zcrit] = flutter(M,K,Qip)
   % set return values
   ucrit = uvec(loc);
   pcrit = imag(p_flutter) * ucrit/ (2*pi*Qip.bref);
-  zcrit = Vu(nmode,loc,:);
+  zcrit = squeeze(Vu(nmode,loc,:));
 
 end

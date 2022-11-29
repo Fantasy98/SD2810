@@ -1,5 +1,6 @@
 
 % Nov29 Lecture Note
+% Try to imporve the flutter analysis by introducing null space
 %
 % main program for aeroelastic analysis
 %
@@ -16,15 +17,6 @@ nnodes = nelem + 1;
 l =1.6; % m
 b = 0.175; % m
 ba = 0.03; % m
-% ba = 0;
-% measured from lab
-
-
-% mhinge = ( 2*(40.33+6.39+2)+...
-%             2*(20.06+2*2)+...
-%             2*(40.33+2*6.39+2*2)+...
-%             3*28.9)  % g
-% mhinge = mhinge/1000; % kg 
 
 % Here the mhinge is just mass of one rod 
 % In the function labwing, it will be tripped
@@ -32,7 +24,7 @@ mhinge = 28e-3;
 
 % mhinge = 0;
 t = 0.004;%m
-rhop = 1963.7; % Measured Density
+rhop = 1950; % Measured Density
 
 % Measured E and G by viberation test
 E = 31.5E9;
@@ -70,33 +62,17 @@ B = eye(3,ndof);
 [M,K,Z,Qip,f,CRv,CRd,s] = labwing(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
 fprintf("Offset s = %.2f m \n",s);
 
-% print free vibration frequencies
-[V,LAMBDA] = eig(K,M);
-Vhat = Z * V;
-omega = sqrt(LAMBDA);
+%%% Implement reduced space by introduce only first n modes
 
 
-##fprintf("Eigen Frequencies are %.2f rad/s \n",LAMBDA);
-% show modeshapes
-% figure(1);
-% plotmode(Vhat(:,1));
+neig = 3;
 
-% stop here until the rest is implemented
-
-[ucrit,pcrit,zcrit] = flutter(M,K,Qip);
+[ucrit,pcrit,zcrit,pconv] = flutter(Mm,Km,mQip,neig);
 
 fprintf("\nFlutter Speed  is %.2f m/s\n",ucrit);
 fprintf("\nFlutter Frequency  is %.2f rad/s\n",pcrit);
-
-% Visualize the mode
-% figure(2);
-% vismode(zcrit);
-
-
-[urev,zrev] = reversal(K,Qip,f,CRv,CRd);
-fprintf("\nReversal Speed  is %.2f m/s\n",urev);
-
-[udiv,zdiv] = divergence(K,Qip);
-fprintf("\nDivergence Speed  is %.2f m/s\n",udiv);
-
-return;
+% Recover the flutter mode into FEM dimension
+z_crit = Zm*zcrit;
+% Visualize the mode and rootlocus
+vismode(z_crit);
+Rootlocus(pconv,neig);

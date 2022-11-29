@@ -49,7 +49,7 @@ fprintf("Offset s = %.2f m \n",s);
 uf = 15;
 % If now we compute the uf as divergence 
 % The flutter probelm has one solution for divergence
-[udiv,zdiv] = divergence(K,Qip)
+[udiv,zdiv] = divergence(K,Qip);
 uf = udiv
 for ik = 1:length(Qip.ktab)
     k= Qip.ktab(ik);
