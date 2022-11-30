@@ -45,7 +45,7 @@ function [ucrit,pcrit,zcrit,pconv,uvec] = flutter(M,K,Qip,neig)
           if ucrit >= u_choose
             ucrit = u_choose; 
             p_flutter = pconv(imode,loc);
-            pcrit = imag(p_flutter) * ucrit/ (2*pi*Qip.bref)
+            pcrit = imag(p_flutter) * ucrit/ (2*pi*Qip.bref);
             zcrit = Vu(imode,loc,:);
           else
             pcrit = 0;
