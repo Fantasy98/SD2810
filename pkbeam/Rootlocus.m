@@ -5,7 +5,6 @@ function Rootlocus(pconv,neig)
 %   neig:  Number of modes to be ploted
 % Output:
 %   Figure of root locus
-    fig =figure(20);
     x0=100;y0=850;width=550;height=400;
     set(gcf,'position',[x0,y0,width,height]);
     for i = 1:neig
