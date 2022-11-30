@@ -11,7 +11,7 @@ function [ucrit,pcrit,zcrit,pconv,uvec] = flutter(M,K,Qip,neig)
   u = 14.5; 
   i = 0.1;
   % Since we know there are only 2 
-  flag = -1;
+  
   for iu = 1:100
       
       [kbounds] = pk_bounds(u,M,K,Qip,neig);    
@@ -28,18 +28,16 @@ function [ucrit,pcrit,zcrit,pconv,uvec] = flutter(M,K,Qip,neig)
   end
 
   ucrit = 100;
+  pcrit = 0;
+  zcrit = 0;
   % Sort out all real part >0
   indx = real(pconv) > 0;
   for imode = 1:neig
       % fprintf("At mode %.2d \n",imode);
       if length(unique(indx(imode,:))) > 1
           % fprintf("Found flutter at mode %.2d\n",imode)
-          
           loc = min( find(indx(imode,:)==1) );
-          % loc = loc_list(1);
-          % fprintf("Found flutter at location %.2d\n",loc)
-          
-          
+          % loc = loc_list(1);    
           u_choose = uvec(loc);
           % fprintf("Found flutter Speed %.2d\n",u_choose);
           if ucrit >= u_choose
@@ -50,11 +48,7 @@ function [ucrit,pcrit,zcrit,pconv,uvec] = flutter(M,K,Qip,neig)
           else
             pcrit = 0;
             zcrit = 0;
-          end
-        
-      
-      end
-  
+           end
   end
 
 

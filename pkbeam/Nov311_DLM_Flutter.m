@@ -48,7 +48,7 @@ dpm(6,:) =[m2 x_coord 133/100];
 dpm(7,:) =[m1 x_coord 160/100];
 
 [M,K,Z,Qip,f,CRv,CRd,s] = labwing_verbose(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
-dQip = read_dlm(Z)
+dQip = read_dlm(Z);
 
 ex_mass1 = 50/1000;
 ex_mass2 = 100/1000;
@@ -57,18 +57,81 @@ ex_mass3 = 150/1000;
 % Just tune the spanwise coordinate
 % Two extra masses
 % Try not exceed 400g
+% Move both Plot contour
+
+Ny = 5;
+Nx = 5;
+
+Y_c = linspace(1.5,l,Ny+1);
+X_c = linspace(b/2,b,Nx+1);
+
+for i = 1:Nx+1;
+    for j = 1:Ny+1
+    fprintf("At %.3f , %.3f \n",-X_c(i),Y_c(j))
+    dpm(8,:) = [2*ex_mass3,-X_c(i) l];
+    dpm(9,:) = [2*ex_mass2,-b Y_c(j)];
+    [M,K,Z,Qip,f,CRv,CRd,s] = labwing_verbose(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
+    [Km,Mm,Zm,mQip]=ReduceDim(M,K,dQip,nmode);
+    [ucrit,pcrit,zcrit,pconv,uvec] = flutter(Mm,Km,mQip,neig);
+    U(i,j) = ucrit;
+    end
+end
+wh = find(U==100);
+U(wh) = 0;
+[x_grid,y_grid] = meshgrid(X_c,Y_c);
+contourf(-x_grid,y_grid,U);
+colorbar();
+xlab = xlabel("x");
+ylab = ylabel("y");
+set([xlab,ylab],"fontsize",10);
+print -djpg DLM_Contour_movXY_500g.jpg
+fprintf("Max flutter speed reached: %.2f m/s \n",max(max(U)));
+
+[udiv,zdiv] = divergence(K, dQip);
+fprintf(1,'Divergence speed: %.2f m/s \n', udiv);
+[urev,zrev] = reversal(K, dQip, f, CRv, CRd);
+fprintf(1,'Reversal speed: %.2f m/s \n', urev);
+
+
+
+return
+
+################################################################################################################
+% Here we assume that the extra mass are all located @ L.E
+% Just tune the spanwise coordinate
+% Two extra masses
+% Try not exceed 400g
+dpm(8,:) = [ex_mass2,-b,l];
+Y = 2:10;
+Y_c = (Y-1)./Y;
+for i = 1:length(Y_c)
+    dpm(9,:) = [2*ex_mass3,-b Y_c(i)*l];
+    [M,K,Z,Qip,f,CRv,CRd,s] = labwing_verbose(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
+    [Km,Mm,Zm,mQip]=ReduceDim(M,K,dQip,nmode);
+    [ucrit,pcrit,zcrit,pconv,uvec] = flutter(Mm,Km,mQip,neig);
+    U(i) = ucrit;
+
+end
+
+plot(Y_c,U,"o-","linewidth",0.8,"markersize",5.5);
+xlab = xlabel("y/l");
+ylab = ylabel("Flutter Speed (m/s)");
+set([xlab,ylab],"fontsize",10);
+print -djpg Ycoord_Flutter_fixed_300g.jpg
+fprintf("Max flutter speed reached: %.2f \n",max(U));
+
+figure(5)
+Rootlocus(pconv,neig);
 
 
 
 
-[Km,Mm,Zm,mQip]=ReduceDim(M,K,dQip,nmode);
-
-[ucrit,pcrit,zcrit,pconv,uvec] = flutter(Mm,Km,mQip,neig);
-
-return;
 
 
 
+
+
+#######################################################################################################################
 % Strip Theory
 [Km,Mm,Zm,mQip]=ReduceDim(M,K,Qip,nmode);
 
@@ -109,7 +172,7 @@ print -djpg Strip_Rep_u.jpg
 % Rootlocus(pconv,neig);
 
 
-
+##############################################################################################################
 Nx = 10;
 Ny = 10;
 
