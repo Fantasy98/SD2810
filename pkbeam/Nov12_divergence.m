@@ -25,8 +25,8 @@ ba = 0.03; % m
 mhinge = 28e-3;
 t = 0.004;%m
 
-rhop = 1963.7; % Measured Density
-fprintf("Reference Mass is 494g \n");
+rhop = 1950; % Measured Density
+
 
 E = 31.5E9;
 % Assumed Possion Ratio
@@ -36,11 +36,19 @@ G = 5.52E9;
 % definition matrix for discrete point masses to attach
 
 % the dpm should give it not only the mass but also the coordinate
-npmass = 0 ;
+npmass = 12 ;
+m1 = (40.33+6.39+2)/1000; %kg
+m2 = (20.06+2*2)/1000; %kg
+m3 = (40.33+2*6.39+2*2)/1000; %kg
+x_coord = (280-175)/1000;
 dpm = zeros(npmass,3);
-dpm(1,:) = 0;
-dpm(2,:) =0;
-% ....
+dpm(1,:) = [m1 x_coord 0];
+dpm(2,:) =[m2 x_coord 27/100];
+dpm(3,:) =[m3 x_coord  53/100];
+dpm(4,:) =[m2 x_coord  80/100];
+dpm(5,:) =[m3 x_coord  106/100];
+dpm(6,:) =[m2 x_coord 133/100];
+dpm(7,:) =[m1 x_coord 160/100];
 
 % set up linear constraints for clamped wing root
 % Number of Degree of freedom
@@ -82,13 +90,17 @@ end
 [udiv,zdiv] = divergence(K, Qip);
 fprintf(1,'Divergence speed: %.2f m/s \n', udiv);
 
+[maxp,loc] = max(deform_tip);
 figure(1)
-plot(uvec,deform_tip,"-o","linewidth",1.5);
+plot(uvec,deform_tip,"-o","linewidth",1.5,"markersize",7.5);
 hold on 
-plot([udiv udiv],[min(deform_tip)-10 max(deform_tip)+10])
-xlabel("speed (m/s)","fontsize",12);
-ylabel("Deflection (m)","fontsize",12);
-
+plot([uvec(loc) uvec(loc)],[min(deform_tip)-40 max(deform_tip)+40],"-.","linewidth",1.5)
+axis([min(uvec) max(uvec) min(deform_tip)-15 max(deform_tip)+15  ]);
+leg = legend({"deformation at wing tip","Divergence Speed"})
+set(leg,"location","northwest","fontsize",15);
+xlabel("speed (m/s)","fontsize",13);
+ylabel("Deformation (m)","fontsize",13);
+print -djpg -r0 Divergence_vs_speed.jpg
 % for iu = 1:5
 %     figure(1+iu)
 %     plotmode(V(:,iu));
