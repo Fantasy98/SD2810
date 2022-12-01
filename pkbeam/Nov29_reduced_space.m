@@ -63,8 +63,9 @@ B = eye(3,ndof);
 fprintf("Offset s = %.2f m \n",s);
 
 %%% Implement reduced space by introduce only first n modes
-
-
+nmode = 6;
+[Km,Mm,Zm,mQip]=ReduceDim(M,K,Qip,nmode);
+    
 neig = 3;
 
 [ucrit,pcrit,zcrit,pconv] = flutter(Mm,Km,mQip,neig);
@@ -76,3 +77,10 @@ z_crit = Zm*zcrit;
 % Visualize the mode and rootlocus
 vismode(z_crit);
 Rootlocus(pconv,neig);
+
+[urev,zrev] = reversal(K,Qip,f,CRv,CRd);
+fprintf("\nReversal Speed  is %.2f m/s\n",urev);
+
+[udiv,zdiv] = divergence(K,Qip);
+fprintf("\nDivergence Speed  is %.2f m/s\n",udiv);
+

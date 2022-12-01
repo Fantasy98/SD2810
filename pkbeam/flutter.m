@@ -1,4 +1,4 @@
-function [ucrit,pcrit,zcrit,pconv,uvec] = flutter(M,K,Qip,neig)
+function [ucrit,pcrit,zcrit,pconv,uvec] = flutter(M,K,Qip,neig,iter = 100)
 % [ucrit,pcrit,zcrit] = flutter(M,K,Qip,neig)
 % pconv : All laplacian frequency computed
 % Compute flutter speed, frequency and critical mode.
@@ -8,11 +8,11 @@ function [ucrit,pcrit,zcrit,pconv,uvec] = flutter(M,K,Qip,neig)
 % Qip : aerodynamic loads interpolation struct
 % neig: number of eigenvector you want
 % (c) 2004-2016 Dan Borglund <dodde@kth.se> and David Eller <dlr@kth.se>
-  u = 14.5; 
+  u = 15.5; 
   i = 0.1;
   % Since we know there are only 2 
   
-  for iu = 1:100
+  for iu = 1:iter
       
       [kbounds] = pk_bounds(u,M,K,Qip,neig);    
       for ieig = 1:neig
