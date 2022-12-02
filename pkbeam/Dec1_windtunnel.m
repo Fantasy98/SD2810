@@ -34,7 +34,7 @@ B = eye(3,ndof);
 nmode = 6;
 neig = 3;
 
-npmass = 12 ;
+npmass = 8 ;
 m1 = (40.33+6.39+2)/1000; %kg
 m2 = (20.06+2*2)/1000; %kg
 m3 = (40.33+2*6.39+2*2)/1000; %kg
@@ -53,22 +53,24 @@ ex_mass2 = 100/1000;
 ex_mass3 = 150/1000;
 % Method 1 Flutter speed = 24.4/s for DLM & 20.50 for Strip
 
-dpm(8,:) = [2*ex_mass3,-b l];
-dpm(9,:) = [2*ex_mass2,-b (5.5/6) *l]; % 1.4667m
+dpm(8,:) = [300/1000 -b l];
+dpm(9,:) = [100/1000 -b l-0.1];
+dpm(10,:) = [100/1000 -b l-0.4];
+% dpm(9,:) = [2*ex_mass2,-b (5.5/6) *l]; % 1.4667m
 
-% % Method 2 Flutter speed = 24.9m/s for DLM & 20.90m/s for Strip
-dpm(8,:) = [ex_mass3+ex_mass3,-b l];
-dpm(9,:) = [ex_mass2+ex_mass2,-b (4.8/5) *l]; %1.5360m
+% % % Method 2 Flutter speed = 24.9m/s for DLM & 20.90m/s for Strip
+% dpm(8,:) = [ex_mass3+ex_mass3,-b l];
+% dpm(9,:) = [ex_mass2+ex_mass2,-b (4.8/5) *l]; %1.5360m
 
-% % Method 3 Flutter speed = 25.50 m/s for DLM & 21.4m/s for Strip
-dpm(8,:) = [ex_mass3+ex_mass3,-b l];
-dpm(9,:) = [ex_mass2+ex_mass2,-b (4.8/5) *l];
-dpm(10,:) = [ex_mass1*2,-b (3.5/5) *l]; % 1.12m
+% % % Method 3 Flutter speed = 25.50 m/s for DLM & 21.4m/s for Strip
+% dpm(8,:) = [ex_mass3+ex_mass3,-b l];
+% dpm(9,:) = [ex_mass2+ex_mass2,-b (4.8/5) *l];
+% dpm(10,:) = [ex_mass1*2,-b (3.5/5) *l]; % 1.12m
 
-% % Method 4 Flutter speed = 25.700 m/s for DLM & 21.50m/s for Strip
-dpm(8,:) = [ex_mass3+ex_mass3,-b l];
-dpm(9,:) = [ex_mass2+ex_mass2,-b (4.8/5) *l];
-dpm(10,:) = [ex_mass1*2,-b (3.7/5) *l]; % 1.184m
+% % % Method 4 Flutter speed = 25.700 m/s for DLM & 21.50m/s for Strip
+% dpm(8,:) = [ex_mass3+ex_mass3,-b l];
+% dpm(9,:) = [ex_mass2+ex_mass2,-b (4.8/5) *l];
+% dpm(10,:) = [ex_mass1*2,-b (3.7/5) *l]; % 1.184m
 
 
 ##################################
@@ -78,17 +80,18 @@ dQip = read_dlm(Z);
 [Km,Mm,Zm,mQip]=ReduceDim(M,K,dQip,nmode);
 [ucrit,pcrit,zcrit,pconv,uvec] = flutter(Mm,Km,mQip,neig,150);
 fprintf("\nFlutter Speed  is %.3f m/s\n",ucrit);
-% fprintf("Flutter Frequency  is %.3f rad/s\n",pcrit);
+fprintf("Flutter Frequency  is %.3f rad/s\n",pcrit);
 [udiv,zdiv] = divergence(K, dQip);
 fprintf(1,'Divergence speed: %.3f m/s \n', udiv);
 [urev,zrev] = reversal(K, dQip, f, CRv, CRd);
-% fprintf(1,'Reversal speed: %.3f m/s \n', urev);
+fprintf(1,'Reversal speed: %.3f m/s \n', urev);
 % Rootlocus(pconv,neig);
 % figure(14)
-plot(uvec,real(pconv),"o");
-
-
-
+% plot(uvec,real(pconv),"-o","markersize",4.5);
+% hold on 
+% plot([min(uvec) max(uvec)],[0 0]);
+% axis([min(uvec) max(uvec)])
+return;
 #######################################################################################################################
 fprintf("\n Strip Theory Results \n")
 % Strip Theory
@@ -96,7 +99,7 @@ fprintf("\n Strip Theory Results \n")
 
 [Km,Mm,Zm,mQip]=ReduceDim(M,K,Qip,nmode);
 
-[ucrit,pcrit,zcrit,pconv,uvec] = flutter(Mm,Km,mQip,neig);
+[ucrit,pcrit,zcrit,pconv,uvec] = flutter(Mm,Km,mQip,neig,50);
 fprintf("\nFlutter Speed  is %.2f m/s\n",ucrit);
 fprintf("Flutter Frequency  is %.2f rad/s\n",pcrit);
 [udiv,zdiv] = divergence(K, Qip);

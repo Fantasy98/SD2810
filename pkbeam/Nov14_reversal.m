@@ -12,7 +12,7 @@ l =1.6; % m
 b = 0.175; % m
 ba = 0.03 ;
 % measured from lab % Not correct need to be calculate again
-mhinge = 0;
+mhinge = 28/1000;
 t = 0.004;%m
 
 rhop = 1950; % Measured Density
@@ -55,7 +55,7 @@ delta = del.*pi/180; % rad
 % Set speed
 iu = 0; 
 
-for u = 15:.1:20
+for u = 12:.1:20
     iu = iu+1;
     
     q = 0.5* Qip.rho * u * u;
@@ -64,61 +64,77 @@ for u = 15:.1:20
         % Solve for the deformation
         v = (K-q*A)\(q*f*delta(d));
             
-            % plotmode(v);
 
             % Plot deformation 
         v_all(iu,:) = v;
+        CR(d,iu) = CRv * v + CRd*d;
         deform_tip(d,iu) = v(end-2);
     end
     uv(iu) = u;
 end
 
+% A_eig = A - f*CRv./CRd;
+% [V,D] = eig(A_eig , K);
+% qrev = 1/max(diag(D));
+% urev = sqrt(2*qrev/Qip.rho);
+
+
+location = abs(deform_tip(1,:)-deform_tip(2,:)) <= 0.001;
+urev = uv(location);
+% Plot the deformation VS velocity 
+% figure(1)
+
+% for d = del
+% plot(uv,deform_tip(d,:),"-","linewidth",1.5);
+% hold on 
+
+% end
+% plot([urev urev],[min(min(deform_tip))-0.2 max(max(deform_tip))+0.2],"r-.","linewidth",2);
+% grid()
+% leg = legend({  ["{\delta} ="   num2str(del(1)) "deg"], ...
+%                 ["{\delta} =" num2str(del(2)) "deg"], ...
+%                 ["{\delta} =" num2str(del(3)) "deg"], ...
+%                 ["{\delta} =" num2str(del(4)) "deg"], ...
+%                 ["{\delta} =" num2str(del(5)) "deg"], ...
+%                 ["Reversal Speed"],...
+            
+
+
+%             });
+% axis([min(uv) max(uv) min(min(deform_tip)) max(max(deform_tip))])
+% set(leg,"location","southwest","fontsize",12,'interpreter', 'tex');
+% xlabel("Speed (m/s)","fontsize",12);
+% ylabel("Deformation (m)","fontsize",12);
+
+% print -djpg -r300 Reversal_vs_speed.jpg
+
 A_eig = A - f*CRv./CRd;
 [V,D] = eig(A_eig , K);
 qrev = 1/max(diag(D));
 urev = sqrt(2*qrev/Qip.rho);
-
-% Plot the deformation VS velocity 
-figure(1)
-
-for d = del
-plot(uv,deform_tip(d,:),"linewidth",1.5);
-hold on 
-end
-plot([urev urev],[min(min(deform_tip))-0.2 max(max(deform_tip))+0.2],"r-.","linewidth",2);
-leg = legend({  ["{\delta} ="   num2str(del(1)) "deg"], ...
-                ["{\delta} =" num2str(del(2)) "deg"], ...
-                ["{\delta} =" num2str(del(3)) "deg"], ...
-                ["{\delta} =" num2str(del(4)) "deg"], ...
-                ["{\delta} =" num2str(del(5)) "deg"], ...
-                ["Reversal Speed"]
-
-
-            });
-axis([min(uv) max(uv) min(min(deform_tip)) max(max(deform_tip))])
-set(leg,"location","southwest","fontsize",12,'interpreter', 'tex');
-xlabel("Speed (m/s)","fontsize",12);
-ylabel("Deformation (m)","fontsize",12);
-
-print -djpg -r300 Reversal_vs_speed.jpg
-
 fprintf("The reverse velocity is %.2f\n",urev);
+% figure(2)
+% plot(uv,CR(1,:));
+% hold on
+% plot([urev urev],[(min(CR(1,:))) max(CR(1,:))],"r-.","linewidth",2);
+
+figure(12)
+plotmode_multi(v_all(68,:));
+hold on
+plotmode_multi(v_all(location,:));
+plotmode_multi(v_all(72,:));
+grid()
+axis([0 l+0.1 -0.1 0.05]);
+leg = legend({  ["u = " num2str(uv(68)) "m/s"], ...
+                ["u_{reversal} =" num2str(uv(70)) "m/s"],....
+                ["u = " num2str(uv(72)) "m/s"],....
+            
+            })
+            
+set(leg,'location',"southwest","fontsize",14);
+print -djpg -r300 Reversal_deflection.jpg
 
 return;
-% Compute the aileron reverse
-A_eig = A - f*CRv./CRd;
-[V,D] = eig(A_eig , K);
-qrev = 1/max(diag(D));
-urev = sqrt(2*qrev/Qip.rho);
-
-figure(2)
-set(get(gca, 'Title'), 'String', 'The deformation before reversal speed');
-plotmode(v_all(30,:));
-
-figure(3)
-set(get(gca, 'Title'), 'String', 'The deformation after reversal speed');
-plotmode(v_all(42,:));
-
 % The reversal speed should be less than divergence
 % The flutter velocity should be lower than the divergence
 % u_flutter = 16 
