@@ -8,7 +8,7 @@ function Rootlocus(pconv,neig)
     x0=100;y0=850;width=550;height=400;
     set(gcf,'position',[x0,y0,width,height]);
     for i = 1:neig
-    plt(i)=plot(real(pconv(i,:)),imag(pconv(i,:)),"o-","linewidth",0.8,"markersize",3.5,"Displayname",["Mode" num2str(i)]);
+    plt(i)=plot(real(pconv(i,:)),imag(pconv(i,:)),"o-","linewidth",0.8,"markersize",6.5,"Displayname",["Mode" num2str(i)]);
 
     hold on 
     end
@@ -16,9 +16,9 @@ function Rootlocus(pconv,neig)
     axis([-0.2 0.2 0 0.5]);
     leg = legend;
 
-    set(leg,"fontsize",10,"location","northwest");
-    xlb =xlabel("k");
+    set(leg,"fontsize",15,"location","northwest");
+    xlb =xlabel("Rep");
     ylb =ylabel("Imp");
-    set([xlb,ylb],"fontsize",10);
+    set([xlb,ylb],"fontsize",15);
     
 end

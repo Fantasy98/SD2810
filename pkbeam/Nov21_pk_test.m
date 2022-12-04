@@ -75,18 +75,35 @@ for ik = 1: length(Qip.ktab)
     %  
     pmx(:,ik) = phat(ipsort);
 end 
+setenv ("OCTAVE_LATEX_DEBUG_FLAG", "1");
+figure(1)
+set(gcf, 'PaperPositionMode', 'manual');
+set(gcf, 'PaperUnits', 'inches');
+% set(gcf, 'PaperPosition', [6 2 6 2]);
+plot(Qip.ktab,imag(pmx(1:4,:)),"o-","linewidth",1.2,"markersize",2.5);
+hold on 
+% Plot the kbounds
+plot(kbounds(1:5),kbounds(1:5),"r*","markersize",10);
+% Plot the Imp = k line as reference
+plot([0 1.5],[0 1.5],"k","linewidth",1.2);
+% Only show k = 0~2 since we only interested in the first 5 modes
+leg = legend({["Im p1"]...,
+              ["Im p2"]...,
+              ["Im p3"]...,
+              ["Im p4"]...,
+            %   ["Im {{p_5}}"]...,
+              ["K boundaries"]...,
+              ["Im p(k) =k"]...,
 
-% figure(1)
-% plot(Qip.ktab,imag(pmx),".");
-% hold on 
-% % Plot the kbounds
-% plot(kbounds,kbounds,"r*","markersize",8.5);
-% % Plot the Imp = k line as reference
-% plot([0 2],[0 2]);
-% % Only show k = 0~2 since we only interested in the first 5 modes
-% axis([0 2 0 2]);
+            })
+set(leg,"location","northwest","fontsize",12,'Interpreter','Latex');
+xlab = xlabel("k","fontsize",15);
+ylab = ylabel('Im p',"fontsize",15);
+set(ylab,'Interpreter','tex')
+axis([0 1.5 0 1.5]);
+print -djpg -r300 Imp_kbound.jpg
 
-
+return;
 %#######################################
 % 2 Testing pk_bisect() 
 % Note that ieig is the index of eigvalue, 

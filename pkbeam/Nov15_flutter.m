@@ -46,27 +46,27 @@ fprintf("Offset s = %.2f m \n",s);
 
 
 
-% uf = 15;
-% for ik = 1:length(Qip.ktab)
-%     k= Qip.ktab(ik);
-%     qdyn = 0.5*Qip.rho*uf *uf;
-%     phat2 = eig(qdyn*Qip.Qtab(:,:,ik)-K, M.*(uf/b)^2);
-%     phat = sqrt(phat2);
-%     phat = phat .* sign(imag(phat));
+uf = 15;
+for ik = 1:length(Qip.ktab)
+    k= Qip.ktab(ik);
+    qdyn = 0.5*Qip.rho*uf *uf;
+    phat2 = eig(qdyn*Qip.Qtab(:,:,ik)-K, M.*(uf/b)^2);
+    phat = sqrt(phat2);
+    phat = phat .* sign(imag(phat));
 
-%     % Sort the phat by ascending order and store the order of index
-%     [psort ipsort] = sort(imag(phat));
-%     % Store it into the pmx
-%     pmx(:,ik) = phat(ipsort);
-% end
+    % Sort the phat by ascending order and store the order of index
+    [psort ipsort] = sort(imag(phat));
+    % Store it into the pmx
+    pmx(:,ik) = phat(ipsort);
+end
 
-% figure(1);
-% % PLOT the k VS imag(phat) sorted  
-% plot(Qip.ktab,imag(pmx),".");
-% hold on 
-% plot([0 2],[0 2]);
-% axis([0 2 0 2])
-
+figure(1);
+% PLOT the k VS imag(phat) sorted  
+plot(Qip.ktab,imag(pmx),".");
+hold on 
+plot([0 2],[0 2]);
+axis([0 2 0 2])
+return;
 ev = eig(K,M);
 omega = sqrt(ev)/(2*pi);
 uf = 15;
@@ -116,7 +116,8 @@ end
 % Plot the root loot of each phat
 figure(2);
 for imode = 1:3
-plot( [0,real(pconv(imode,:))],...
+plot( 
+    % [0,real(pconv(imode,:))],...
       [omega(imode).*b/uvec(1), imag(pconv(imode,:))],"o-","linewidth",1.5);
 
 hold on 
