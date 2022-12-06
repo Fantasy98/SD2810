@@ -51,7 +51,7 @@ ex_mass2 = 100/1000;
 ex_mass3 = 150/1000;
 % Method 1 Flutter speed = 24.4/s for DLM & 20.50 for Strip
 
-dpm(8,:) = [500/1000 -b l];
+% dpm(8,:) = [500/1000 -b l];
 % dpm(9,:) = [100/1000 -b l-0.1];
 % dpm(10,:) = [100/1000 -b l-0.4];
 % dpm(9,:) = [2*ex_mass2,-b (5.5/6) *l]; % 1.4667m
@@ -73,44 +73,51 @@ dpm(8,:) = [500/1000 -b l];
 
 ##################################
 
-[M,K,Z,Qip,f,CRv,CRd,s] = labwing_verbose(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
-dQip = read_dlm(Z);
-[Km,Mm,Zm,mQip]=ReduceDim(M,K,dQip,nmode);
-[ucrit,pcrit,zcrit,pconv,uvec] = flutter(Mm,Km,mQip,neig,100);
-fprintf("\nFlutter Speed  is %.3f m/s\n",ucrit);
-fprintf("Flutter Frequency  is %.3f rad/s\n",pcrit);
-[udiv,zdiv] = divergence(K, dQip);
-fprintf(1,'Divergence speed: %.3f m/s \n', udiv);
-[urev,zrev] = reversal(K, dQip, f, CRv, CRd);
-fprintf(1,'Reversal speed: %.3f m/s \n', urev);
-figure(5)
-Rootlocus(pconv,neig);
-print -djpg DLM_500_rootlocus.jpg
+% [M,K,Z,Qip,f,CRv,CRd,s] = labwing_verbose(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
+% dQip = read_dlm(Z);
+% [Km,Mm,Zm,mQip]=ReduceDim(M,K,dQip,nmode);
+% [ucrit,pcrit,zcrit,pconv,uvec] = flutter(Mm,Km,mQip,neig,100);
+% fprintf("\nFlutter Speed  is %.3f m/s\n",ucrit);
+% fprintf("Flutter Frequency  is %.3f rad/s\n",pcrit);
+% [udiv,zdiv] = divergence(K, dQip);
+% fprintf(1,'Divergence speed: %.3f m/s \n', udiv);
+% [urev,zrev] = reversal(K, dQip, f, CRv, CRd);
+% fprintf(1,'Reversal speed: %.3f m/s \n', urev);
+% figure(5)
+% Rootlocus(pconv,neig);
+% print -djpg DLM_500_rootlocus.jpg
 
 
 
 
-figure(12)
-x0=100;y0=850;width=550;height=400;
-set(gcf,'position',[x0,y0,width,height]);
-for imode = 1:3
-    plot(uvec, real(pconv(imode,:)),"o-","linewidth",0.8,"markersize",6.5);
-    hold on 
-    end
-plot([10 25],[0,0],"k-.","linewidth",1.5);
-leg = legend({
-        "Real part of Mode 1",...
-        "Real part of Mode 2",...
-        "Real part of Mode 3",...
-        "Re(p) = 0"
-        });
-set(leg,"fontsize",13,"location","southwest");
-xlb = xlabel("u (m/s)");
-ylb = ylabel("Real(p)");
-set([xlb,ylb],"fontsize",15);
-axis([14 25]);
-print -djpg DLM_500_Rep_u.jpg
-return
+% figure(12)
+% x0=100;y0=850;width=650;height=500;
+% set(gcf,'position',[x0,y0,width,height]);
+% for imode = 1:3
+%     plot(uvec, real(pconv(imode,:)),"o-","linewidth",0.8,"markersize",6.5);
+%     hold on 
+%     end
+% plot([ucrit ucrit],[0 0],"rp","markersize",20.5,'MarkerFaceColor','red')
+
+% plot([10 25],[0,0],"k-.","linewidth",1.5);
+% leg = legend({
+%         "Real part of Mode 1",...
+%         "Real part of Mode 2",...
+%         "Real part of Mode 3",...
+%         "Flutter Speed",...
+%         "Re(p) = 0"
+%         });
+% set(leg,"fontsize",1,"location","southwest");
+% xlb = xlabel("u (m/s)");
+% ylb = ylabel("Real(p)");
+% set([xlb,ylb],"fontsize",20);
+% axis([14 24]);
+% a = get(gca,'XTickLabel');
+% b = get(gca,'YTickLabel');
+% set(gca,'XTickLabel',a,'fontsize',20)
+% set(gca,'YTickLabel',b,'fontsize',20)
+% print -djpg DLM_500_Rep_u.jpg
+% return
 #######################################################################################################################
 fprintf("\n Strip Theory Results \n")
 % Strip Theory
@@ -118,7 +125,7 @@ fprintf("\n Strip Theory Results \n")
 
 [Km,Mm,Zm,mQip]=ReduceDim(M,K,Qip,nmode);
 
-[ucrit,pcrit,zcrit,pconv,uvec] = flutter(Mm,Km,mQip,neig,70);
+[ucrit,pcrit,zcrit,pconv,uvec] = flutter(Mm,Km,mQip,neig,80);
 fprintf("\nFlutter Speed  is %.2f m/s\n",ucrit);
 fprintf("Flutter Frequency  is %.2f rad/s\n",pcrit);
 [udiv,zdiv] = divergence(K, Qip);
@@ -137,24 +144,31 @@ print -djpg Strip_rootlocus.jpg
 
 
 figure(12)
-x0=100;y0=850;width=550;height=400;
+x0=100;y0=850;width=650;height=500;
 set(gcf,'position',[x0,y0,width,height]);
 for imode = 1:3
     plot(uvec, real(pconv(imode,:)),"o-","linewidth",0.8,"markersize",6.5);
     hold on 
     end
+
+plot([ucrit ucrit],[0 0],"rp","markersize",20.5,'MarkerFaceColor','red')
 plot([10 25],[0,0],"k-.","linewidth",1.5);
 leg = legend({
         "Real part of Mode 1",...
         "Real part of Mode 2",...
         "Real part of Mode 3",...
+        "Flutter Speed",...
         "Re(p) = 0"
         });
-set(leg,"fontsize",13,"location","southwest");
+set(leg,"fontsize",1,"location","southwest");
 xlb = xlabel("u (m/s)");
 ylb = ylabel("Real(p)");
-set([xlb,ylb],"fontsize",15);
+set([xlb,ylb],"fontsize",16);
 axis([14 20]);
+a = get(gca,'XTickLabel');
+b = get(gca,'YTickLabel');
+set(gca,'XTickLabel',a,'fontsize',20)
+set(gca,'YTickLabel',b,'fontsize',20)
 print -djpg Strip_Rep_u.jpg
 return
 % % Recover the flutter mode into FEM dimension

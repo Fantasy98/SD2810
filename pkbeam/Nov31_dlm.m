@@ -49,7 +49,7 @@ m_extra = [50 100 150]/1000;
 
 %% A extreme case which will trigger the mode3 be hump as well 
 %% In this way, we are decreasing flutter speed instead of improve it !
-dpm(9,:) = [3*m_extra(3),-b,l];
+% dpm(9,:) = [3*m_extra(3),-b,l];
 
 
 
@@ -72,6 +72,7 @@ fprintf(1,'Divergence speed: %.2f m/s \n', udiv);
 %compute reversal speed
 [urev,zrev] = reversal(K, dQip, f, CRv, CRd);
 fprintf(1,'Reversal speed: %.2f m/s \n', urev);
+return
 figure(4)
 Rootlocus(pconv,neig);
 print -djpg DLM_rootlocus.jpg

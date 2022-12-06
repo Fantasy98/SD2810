@@ -92,14 +92,19 @@ fprintf(1,'Divergence speed: %.2f m/s \n', udiv);
 
 [maxp,loc] = max(deform_tip);
 figure(1)
-plot(uvec,deform_tip,"-o","linewidth",1.5,"markersize",7.5);
+plot(uvec,deform_tip,"-o","linewidth",3.5,"markersize",12.5);
 hold on 
-plot([uvec(loc) uvec(loc)],[min(deform_tip)-40 max(deform_tip)+40],"-.","linewidth",1.5)
+plot([uvec(loc) uvec(loc)],[min(deform_tip)-40 max(deform_tip)+40],"-.","linewidth",4.5)
 axis([min(uvec) max(uvec) min(deform_tip)-15 max(deform_tip)+15  ]);
 leg = legend({"deformation at wing tip","Divergence Speed"})
-set(leg,"location","northwest","fontsize",15);
-xlabel("speed (m/s)","fontsize",13);
-ylabel("Deformation (m)","fontsize",13);
+set(leg,"location","northwest","fontsize",20);
+xlab=xlabel("speed (m/s)","fontsize",13);
+ylab=ylabel("Deformation (m)","fontsize",13);
+set([xlab ylab],"fontsize",20)
+a = get(gca,'XTickLabel');
+b = get(gca,'YTickLabel');
+set(gca,'XTickLabel',a,'fontsize',20)
+set(gca,'YTickLabel',b,'fontsize',20)
 print -djpg -r0 Divergence_vs_speed.jpg
 % for iu = 1:5
 %     figure(1+iu)

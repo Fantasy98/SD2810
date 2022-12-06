@@ -82,31 +82,35 @@ end
 location = abs(deform_tip(1,:)-deform_tip(2,:)) <= 0.001;
 urev = uv(location);
 % Plot the deformation VS velocity 
-% figure(1)
+figure(1)
 
-% for d = del
-% plot(uv,deform_tip(d,:),"-","linewidth",1.5);
-% hold on 
+for d = del
+plot(uv,deform_tip(d,:),"-","linewidth",3.5);
+hold on 
 
-% end
-% plot([urev urev],[min(min(deform_tip))-0.2 max(max(deform_tip))+0.2],"r-.","linewidth",2);
-% grid()
-% leg = legend({  ["{\delta} ="   num2str(del(1)) "deg"], ...
-%                 ["{\delta} =" num2str(del(2)) "deg"], ...
-%                 ["{\delta} =" num2str(del(3)) "deg"], ...
-%                 ["{\delta} =" num2str(del(4)) "deg"], ...
-%                 ["{\delta} =" num2str(del(5)) "deg"], ...
-%                 ["Reversal Speed"],...
+end
+plot([urev urev],[min(min(deform_tip))-0.2 max(max(deform_tip))+0.2],"r-.","linewidth",3);
+grid()
+leg = legend({  ["{\delta} ="   num2str(del(1)) "deg"], ...
+                ["{\delta} =" num2str(del(2)) "deg"], ...
+                ["{\delta} =" num2str(del(3)) "deg"], ...
+                ["{\delta} =" num2str(del(4)) "deg"], ...
+                ["{\delta} =" num2str(del(5)) "deg"], ...
+                ["Reversal Speed"],...
             
 
 
-%             });
-% axis([min(uv) max(uv) min(min(deform_tip)) max(max(deform_tip))])
-% set(leg,"location","southwest","fontsize",12,'interpreter', 'tex');
-% xlabel("Speed (m/s)","fontsize",12);
-% ylabel("Deformation (m)","fontsize",12);
-
-% print -djpg -r300 Reversal_vs_speed.jpg
+            });
+axis([min(uv) max(uv) min(min(deform_tip)) max(max(deform_tip))])
+set(leg,"location","southwest","fontsize",20,'interpreter', 'tex');
+xlab =xlabel("Speed (m/s)","fontsize",18);
+ylab =ylabel("Deformation (m)","fontsize",18);
+set([xlab ylab],"fontsize",18)
+a = get(gca,'XTickLabel');
+b = get(gca,'YTickLabel');
+set(gca,'XTickLabel',a,'fontsize',20)
+set(gca,'YTickLabel',b,'fontsize',20)
+print -djpg -r300 Reversal_vs_speed.jpg
 
 A_eig = A - f*CRv./CRd;
 [V,D] = eig(A_eig , K);
@@ -125,13 +129,18 @@ plotmode_multi(v_all(location,:));
 plotmode_multi(v_all(72,:));
 grid()
 axis([0 l+0.1 -0.1 0.05]);
+
 leg = legend({  ["u = " num2str(uv(68)) "m/s"], ...
-                ["u_{reversal} =" num2str(uv(70)) "m/s"],....
+                ["reversal =" num2str(uv(70)) "m/s"],....
                 ["u = " num2str(uv(72)) "m/s"],....
             
             })
             
-set(leg,'location',"southwest","fontsize",14);
+set(leg,'location',"southwest","fontsize",18);
+a = get(gca,'XTickLabel');
+b = get(gca,'YTickLabel');
+set(gca,'XTickLabel',a,'fontsize',20)
+set(gca,'YTickLabel',b,'fontsize',20)
 print -djpg -r300 Reversal_deflection.jpg
 
 return;

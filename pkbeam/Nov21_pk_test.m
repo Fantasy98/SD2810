@@ -80,10 +80,10 @@ figure(1)
 set(gcf, 'PaperPositionMode', 'manual');
 set(gcf, 'PaperUnits', 'inches');
 % set(gcf, 'PaperPosition', [6 2 6 2]);
-plot(Qip.ktab,imag(pmx(1:4,:)),"o-","linewidth",1.2,"markersize",2.5);
+plot(Qip.ktab,imag(pmx(1:4,:)),"o-","linewidth",1.2,"markersize",7.5);
 hold on 
 % Plot the kbounds
-plot(kbounds(1:5),kbounds(1:5),"r*","markersize",10);
+plot(kbounds(1:5),kbounds(1:5),"rp","markersize",15,'MarkerFaceColor','red');
 % Plot the Imp = k line as reference
 plot([0 1.5],[0 1.5],"k","linewidth",1.2);
 % Only show k = 0~2 since we only interested in the first 5 modes
@@ -96,11 +96,15 @@ leg = legend({["Im p1"]...,
               ["Im p(k) =k"]...,
 
             })
-set(leg,"location","northwest","fontsize",12,'Interpreter','Latex');
+set(leg,"location","northwest","fontsize",18,'Interpreter','Latex');
 xlab = xlabel("k","fontsize",15);
 ylab = ylabel('Im p',"fontsize",15);
-set(ylab,'Interpreter','tex')
+set([xlab ylab],'Interpreter','tex',"fontsize",20)
 axis([0 1.5 0 1.5]);
+a = get(gca,'XTickLabel');
+b = get(gca,'YTickLabel');
+set(gca,'XTickLabel',a,'fontsize',20)
+set(gca,'YTickLabel',b,'fontsize',20)
 print -djpg -r300 Imp_kbound.jpg
 
 return;

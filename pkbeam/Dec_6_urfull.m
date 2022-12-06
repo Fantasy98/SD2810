@@ -1,13 +1,14 @@
 
 % Dec6 Flight Loads 
 % Wing of Full span model
+% 
 % (c) 2004-2016 Dan Borglund <dodde@kth.se> and David Eller <dlr@kth.se>
 
 clear all;
 
 % setup geometry and structural properties
 % number of finite elements requested should be a multiple of 3
-nelem = 12;
+nelem =12;
 nnodes = nelem + 1;
 
 % lab wing dimensions and properties
@@ -49,7 +50,6 @@ dpm(7,:) =[m1 x_coord 160/100];
 % ....
 
 ndof = 3*nnodes;
-B = eye(3,ndof);
 % Since aircraft is maneuvoring, no rigid body conrtain at all
 % No constrain before we get M, K ,Qip 
 B = []
@@ -58,7 +58,6 @@ B = []
 [M,K,Z,Qip,f,CRv,CRd,s] = labwing_verbose(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
 fprintf("Offset s = %.2f m \n",s);
 
-%
 % Obtain static aerodynamic forces
 Q0 = Qip.Qtab(:,:,1);
 % Now we compute constrain maunally and convert into null space
@@ -105,7 +104,7 @@ alfa = L/(q*S*CLalfa);
 ############# Ineria Relief
 % Make elastic deformation is orthorgonal to the rigid body
 % Linear function distribution of right slope
-yn = (l/2)*linspace(-1,1,nnodes);
+yn = 0.5*l*linspace(-1,1,nnodes);
 B = zeros(3,ndof);
 B(1,:) = e1'
 
@@ -140,8 +139,22 @@ rank = rank([B' Z]);
 % 
 
 ev = eig(Z'*Q0*Z,Z'*K*Z);
-qdiv = max(1/ev);
+qdiv = 1/max(ev);
 udiv = sqrt(2*qdiv/Qip.rho)
 
+
+
+
+
+ndof = 3*nnodes;
+% Constrain of first 3 dof
+B = eye(3,ndof);
+
+% retrieve system matrics
+l = 1.6;
+[M,K,Z,Qip,f,CRv,CRd,s] = labwing_verbose(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
+
+[udiv,zdiv] = divergence(K, Qip);
+fprintf(1,'Divergence speed: %.2f m/s \n', udiv);
 
 % K * vtot  + g*M*e1
