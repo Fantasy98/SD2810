@@ -63,7 +63,7 @@ ex_mass1 = 50/1000;%kg
 for i = 1:1:Ny+1
     for j = i:1:Nx+1
     fprintf("At x= %.3f m,y=%.3f m \n",x_c(i),y_c(j))
-    dpm(8,:) = [2*ex_mass3 x_c(i) y_c(j)];
+    dpm(8,:) = [ex_mass3 x_c(i) y_c(j)];
     
     [M,K,Z,Qip,f,CRv,CRd,s] = labwing_verbose(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
     dQip = read_dlm(Z);    
@@ -76,11 +76,16 @@ end
 % Plot Contour
 figure(15)
 contourf(x_grid,y_grid,U);
-colorbar();
+c = colorbar;
+set(c,"fontsize",16)
 xlab = xlabel("X Coordinate (m)");
 ylab = ylabel("Y Coordinate (m)");
 set([xlab,ylab],"fontsize",18);
-print -djpg DLM_Contour_Flutter_450.jpg
+print -djpg DLM_Contour_Flutter_150.jpg
+a = get(gca,'XTickLabel');
+b = get(gca,'YTickLabel');
+set(gca,'XTickLabel',a,'fontsize',18)
+set(gca,'YTickLabel',b,'fontsize',18)
 return; 
 % retrieve system matrices
 
