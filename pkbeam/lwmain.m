@@ -53,9 +53,9 @@ dpm(1,:) = [m1 x_coord 0];
 dpm(2,:) =[m2 x_coord 27/100];
 dpm(3,:) =[m3 x_coord  53/100];
 dpm(4,:) =[m2 x_coord  80/100];
-dpm(5,:) =[m2 x_coord  106/100];
+dpm(5,:) =[m3 x_coord  106/100];
 dpm(6,:) =[m2 x_coord 133/100];
-dpm(7,:) =[m2 x_coord 160/100];
+dpm(7,:) =[m1 x_coord 160/100];
 % ....
 
 % set up linear constraints for clamped wing root
@@ -106,6 +106,14 @@ fprintf(1,'Divergence speed: %.2f m/s \n', udiv);
 %compute reversal speed
 [urev,zrev] = reversal(K, Qip, f, CRv, CRd);
 fprintf(1,'Reversal speed: %.2f m/s \n', urev);
+
+nmode = 3;
+neig = 3
+[Km,Mm,Zm,mQip]=ReduceDim(M,K,Qip,nmode);
+[ucrit,pcrit,zcrit,pconv,uvec] = flutter(Mm,Km,mQip,neig,50);
+
+fprintf(1,'Fluteer speed: %.2f m/s \n', ucrit);
+
 return;
 
 ##% compute flutter speed
