@@ -1,13 +1,15 @@
 
 % Dec3 Flight Loads 
 % Quasi-Steady
+% Case1  clamped wing at lab 
+% Case2  clamped wing on glider 
 % (c) 2004-2016 Dan Borglund <dodde@kth.se> and David Eller <dlr@kth.se>
 
 clear all;
 
 % setup geometry and structural properties
 % number of finite elements requested should be a multiple of 3
-nelem = 24;
+nelem = 12;
 nnodes = nelem + 1;
 
 % lab wing dimensions and properties
@@ -69,7 +71,7 @@ ev = eig(Z'*Q0*Z,Z'*K*Z);
 % Dynamic pressure
 qdiv = 1/max(ev);
 % Divergence speed
-udiv = sqrt(2*qdiv/Qip.rho);
+udiv = sqrt(2*qdiv/Qip.rho)
 
 #########################################
 % Angle of attack 
@@ -103,12 +105,14 @@ alfa = L/(q*S*CLalfa);
 
 ############# Ineria Relief
 % Make elastic deformation is orthorgonal to the rigid body
-B = zeros(3,ndof);
-B(1,:) = e1';
-B(2,2) = 1;
-B(3,3) = 1;
+% B = zeros(3,ndof);
+% B(1,:) = e1';
+% B(2,2) = 1;
+% B(3,3) = 1;
+B = eye(3,ndof);
 Z = null(B);
-% Check 
+% Matrix [B' Z] has shape of ndof x ndof 
+% It is non-singular !!!!!
 ndof == rank([B' Z])
 
 ####Solve for initial angle 
@@ -122,9 +126,19 @@ RHS = [-nz*g*Z'*M*e1
 % Retrieve [vehat
 %          alpha0]
 x = LHS\RHS;
-x(end)*180/pi;
+alfa0 =x(end);
+vhat = x(1:end-1);
+vtot =  Z*vhat + alfa0*e3;
 
+% res =(K-q.*Q0) *vtot + nz*g*M*e1 -q*Q0*e3;
+res = Z' *(K-q*Q0)*Z*vhat  -q*Z'*Q0*e3*alfa0 + nz*g*Z'*M*e1;
+
+res = K*vtot + M*nz*g*e1 - q*Q0*vtot
+fprintf("The residual of results %E \n",min(abs(res)))
 % Divergence
 ev = eig(Z'*Q0*Z,Z'*K*Z);
 qdiv = max(1/ev);
-udiv = sqrt(2*qdiv/Qip.rho);
+udiv = sqrt(2*qdiv/Qip.rho)
+
+plot_stress(vtot,l)
+

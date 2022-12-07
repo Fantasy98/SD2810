@@ -1,6 +1,6 @@
 
 % Dec6 Flight Loads 
-% Wing of Full span model
+% Wing of Full span model under quasi-steady state
 % 
 % (c) 2004-2016 Dan Borglund <dodde@kth.se> and David Eller <dlr@kth.se>
 
@@ -8,11 +8,13 @@ clear all;
 
 % setup geometry and structural properties
 % number of finite elements requested should be a multiple of 3
+% since we are simulating the 2 wings, thus the number of element should be 3n
+%  The aircraft is like:   ---o---
 nelem =12;
 nnodes = nelem + 1;
 
 % lab wing dimensions and properties
-% Full span!!!!!
+% Full span!!!!! Thus the length of wing is doulbed
 l =1.6*2; % m
 b = 0.175; % m
 ba = 0.03; % m
@@ -58,6 +60,9 @@ B = []
 [M,K,Z,Qip,f,CRv,CRd,s] = labwing_verbose(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
 fprintf("Offset s = %.2f m \n",s);
 
+% First let's compute divergence speed as reference.
+% Divergence speed should be identicall to any case since it's not related to the accelration 
+####################################
 % Obtain static aerodynamic forces
 Q0 = Qip.Qtab(:,:,1);
 % Now we compute constrain maunally and convert into null space
@@ -71,6 +76,8 @@ qdiv = 1/max(ev);
 % Divergence speed
 udiv = sqrt(2*qdiv/Qip.rho);
 
+
+% 2 Consider the clamped 
 #########################################
 % Angle of attack 
 % To derive the total mass 
@@ -132,7 +139,11 @@ RHS = [-nz*g*Z'*M*e1
 %          alpha0]
 x = LHS\RHS;
 alfa0 = x(end)*180/pi;
-
+alfa0 =x(end);
+vhat = x(1:end-1);
+vtot =  Z*vhat + alfa0*e3;
+res = K*vtot + M*nz*g*e1 - q*Q0*vtot
+fprintf("The residual of results %E \n",min(abs(res)))
 rank = rank([B' Z]);
 % Divergence 
 % udiv = 10.4m/s whats wrong?
@@ -141,6 +152,11 @@ rank = rank([B' Z]);
 ev = eig(Z'*Q0*Z,Z'*K*Z);
 qdiv = 1/max(ev);
 udiv = sqrt(2*qdiv/Qip.rho)
+
+
+
+
+
 
 
 
