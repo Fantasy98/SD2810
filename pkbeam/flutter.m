@@ -26,13 +26,14 @@ function [ucrit,pcrit,zcrit,pconv,uvec] = flutter(M,K,Qip,neig,iter = 100)
       u = u + i;
       uvec(iu) = u;
   end
-
-  ucrit = 100;
+  
+  ucrit = max(uvec);
   pcrit = 0;
   zcrit = 0;
   % Sort out all real part >0
   indx = real(pconv) > 0;
   for imode = 1:neig
+      
       % fprintf("At mode %.2d \n",imode);
       if length(unique(indx(imode,:))) > 1
           % fprintf("Found flutter at mode %.2d\n",imode)
@@ -41,14 +42,17 @@ function [ucrit,pcrit,zcrit,pconv,uvec] = flutter(M,K,Qip,neig,iter = 100)
           u_choose = uvec(loc);
           % fprintf("Found flutter Speed %.2d\n",u_choose);
           if ucrit >= u_choose
+            u_save = u_choose
             ucrit = u_choose; 
             p_flutter = pconv(imode,loc);
             pcrit = imag(p_flutter) * ucrit/ (2*pi*Qip.bref);
             zcrit = Vu(imode,loc,:);
           else
+            ucrit = u_save;
             pcrit = 0;
             zcrit = 0;
            end
+ 
   end
 
 

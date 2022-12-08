@@ -38,7 +38,7 @@ function plot_stress(v,l)
 
     Mx = -E * Ixx .* w2 .*yp;
     sigma = Mx .*0.5*t./Ixx;
-
+    
     % Compute shear stress along span
     % theta = T * L / (J*G)
     beta = 1/3;

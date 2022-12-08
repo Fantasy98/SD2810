@@ -143,17 +143,17 @@ alfa0 =x(end);
 vhat = x(1:end-1);
 vtot =  Z*vhat + alfa0*e3;
 res = K*vtot + M*nz*g*e1 - q*Q0*vtot
-fprintf("The residual of results %E \n",min(abs(res)))
+fprintf("Deformation computed, bthe residual of results %E \n",min(abs(res)))
 rank = rank([B' Z]);
 % Divergence 
-% udiv = 10.4m/s whats wrong?
-% 
+% udiv = 10.4m/s whats wrong? 
+
 
 ev = eig(Z'*Q0*Z,Z'*K*Z);
 qdiv = 1/max(ev);
 udiv = sqrt(2*qdiv/Qip.rho)
 
-
+plot_stress(vtot,l,)
 
 
 

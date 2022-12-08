@@ -47,14 +47,14 @@ dpm(7,:) =[m1 x_coord 160/100];
 Nx = 10;
 Ny = 10;
 
-x_c = linspace(-b,b-ba,Nx+1);
+x_c = linspace(0,b,Nx+1);
 y_c = linspace(0,l,Ny+1);
 
 x_rev = x_c(end:-1:1);
 y_rev = y_c(end:-1:1);
 [x_grid,y_grid] = meshgrid(x_c,y_c);
-nmode = 3;
-neig = 2;
+nmode = 6;
+neig = 4;
 U = zeros(size(y_grid));
      
 ex_mass3 = 150/1000;%kg
@@ -63,7 +63,7 @@ ex_mass1 = 50/1000;%kg
 for i = 1:1:Ny+1
     for j = i:1:Nx+1
     fprintf("At x= %.3f m,y=%.3f m \n",x_c(i),y_c(j))
-    dpm(8,:) = [ex_mass3 x_c(i) y_c(j)];
+    dpm(8,:) = [5*ex_mass2 -x_c(j) y_c(i)];
     
     [M,K,Z,Qip,f,CRv,CRd,s] = labwing_verbose(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
     dQip = read_dlm(Z);    
@@ -75,13 +75,13 @@ end
 
 % Plot Contour
 figure(15)
-contourf(x_grid,y_grid,U);
+contourf(-x_grid(Nx/2:end,Nx/2:end),y_grid(Nx/2:end,Nx/2:end),U(Nx/2:end,Nx/2:end));
 c = colorbar;
 set(c,"fontsize",16)
 xlab = xlabel("X Coordinate (m)");
 ylab = ylabel("Y Coordinate (m)");
 set([xlab,ylab],"fontsize",18);
-print -djpg DLM_Contour_Flutter_150.jpg
+print -djpg DLM_Contour_Flutter_500.jpg
 a = get(gca,'XTickLabel');
 b = get(gca,'YTickLabel');
 set(gca,'XTickLabel',a,'fontsize',18)
