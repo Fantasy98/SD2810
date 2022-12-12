@@ -12,22 +12,23 @@ clear all;
 nelem = 1;
 nnodes = nelem + 1;
 
+nelem = 24;
+nnodes = nelem + 1;
+
 % lab wing dimensions and properties
-l =1.2; % m
-b = 0.2; % m
-ba = 0.03; % m
-ba = 0;
-% measured from lab
+l =1.6; % m
+b = 0.175; % m
+ba = 0.03 ;
+% measured from lab % Not correct need to be calculate again
 mhinge = 0;
-t = 0.003;%m
-rhop = 1963.7; % Measured Density
+t = 0.004;%m
+
+rhop = 1950; % Measured Density
 
 % Measured E and G by viberation test
-E = 25E9;
+E = 31.5E9;
 % Assumed Possion Ratio
-E = E * 2.5;
-possion = 0.21;
-G = E/2*(1+possion);
+G = 5.52E9;
 
 
 % definition matrix for discrete point masses to attach
@@ -38,11 +39,9 @@ dpm(2,:) =0;
 % ....
 
 % set up linear constraints for clamped wing root
-%% Number of Degree of freedom
+% Number of Degree of freedom
 ndof = 3*nnodes;
 B = eye(3,ndof);
-
-% C : Null space of B  Chapter 6.8
 
 
 % retrieve system matrices

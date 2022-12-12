@@ -73,7 +73,7 @@ vshape = size(K,1);
 v0 = zeros(vshape,1);
 v0(3:3:end) = pi/180;
 iu = 0;
-for u = 19:0.1:21
+for u = 15:1:21
     iu = iu+1;
     % dynamic pressure
     q = 0.5*Qip.rho * u *u
@@ -82,11 +82,11 @@ for u = 19:0.1:21
     v = vt + v0;
     % store all deflection
     V(:,iu) = v;
-    deform_tip(iu) = v(end-2);
+    deform_tip(iu) = vt(end);
     uvec(iu) = u;
 end
 
-% compute divergence speed
+% +jkl>fcompute divergence speed
 [udiv,zdiv] = divergence(K, Qip);
 fprintf(1,'Divergence speed: %.2f m/s \n', udiv);
 
@@ -105,10 +105,11 @@ a = get(gca,'XTickLabel');
 b = get(gca,'YTickLabel');
 set(gca,'XTickLabel',a,'fontsize',20)
 set(gca,'YTickLabel',b,'fontsize',20)
-print -djpg -r0 Divergence_vs_speed.jpg
-% for iu = 1:5
-%     figure(1+iu)
-%     plotmode(V(:,iu));
+% print -djpg -r0 Divergence_vs_speed.jpg
+% for iu = 1:length(uvec)
+    
+%     % title(["Speed" num2str(uvec(iu)) ])
+%     plotmode_multi(V(:,iu));
 %     hold on
 % end
 % legend();

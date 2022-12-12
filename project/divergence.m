@@ -18,7 +18,7 @@ function [udiv,zdiv] = divergence(K,Qip)
   [Lambda_max,indx] = max(abs(diag(Pressure)));
   qDiv = 1/Lambda_max;
 
-  fprintf("The divergence pressure is %.2f pa \n",qDiv);
+  fprintf("\nThe divergence pressure is %.2f pa \n",qDiv);
   air_rho = Qip.rho;
   UDiv = sqrt(2*qDiv/air_rho);
 

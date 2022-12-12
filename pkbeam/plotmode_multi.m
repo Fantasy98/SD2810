@@ -39,10 +39,10 @@ function plotmode_multi(v)
   
   % subplot(4,1,[1 2])
   hold on
-    plot(yp, w,"linewidth",7)
+    plot(yp, t,"linewidth",7)
     % title('Deformation of elastic axis',"fontsize",25)
-    ylab=ylabel('Deflection [m]',"fontsize",20)
-    xlabe =xlabel('Span coordinate [m]',"fontsize",20)
+    ylab=ylabel('Deflection [m]',"fontsize",20);
+    xlabe =xlabel('Span coordinate [m]',"fontsize",20);
     
     box
   hold off

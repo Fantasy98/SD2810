@@ -39,7 +39,7 @@ function [M,K,Z,Qip,f,CRv,CRd,s] = labwing(B, l, b, t, ba, mhinge, rhop, E, G, n
   end
 
   % define properties for 4 spanwise support points
-  nsup = 4;
+  nsup = 5;
   y = linspace(0.0, l, nsup);
 
   % planform definition
@@ -196,6 +196,7 @@ function [geo] = new_wing(y, xle, xte, ca, xea, xcm, my, Jy, EI, GK, nelem)
   geo.gk = interp1(y, GK, yt, 'spline');
 
 end
+
 
 function [geo] = attach_conmass(geo, dm, x, y, dJ)
 % [geo] = attach_conmass(geo, dm, x, y, dJ)

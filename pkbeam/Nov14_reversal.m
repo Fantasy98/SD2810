@@ -110,7 +110,7 @@ a = get(gca,'XTickLabel');
 b = get(gca,'YTickLabel');
 set(gca,'XTickLabel',a,'fontsize',20)
 set(gca,'YTickLabel',b,'fontsize',20)
-print -djpg -r300 Reversal_vs_speed.jpg
+% print -djpg -r300 Reversal_vs_speed.jpg
 
 A_eig = A - f*CRv./CRd;
 [V,D] = eig(A_eig , K);
@@ -128,7 +128,7 @@ hold on
 plotmode_multi(v_all(location,:));
 plotmode_multi(v_all(72,:));
 grid()
-axis([0 l+0.1 -0.1 0.05]);
+% axis([0 l+0.1 -0.1 0.05]);
 
 leg = legend({  ["u = " num2str(uv(68)) "m/s"], ...
                 ["reversal =" num2str(uv(70)) "m/s"],....
@@ -141,7 +141,7 @@ a = get(gca,'XTickLabel');
 b = get(gca,'YTickLabel');
 set(gca,'XTickLabel',a,'fontsize',20)
 set(gca,'YTickLabel',b,'fontsize',20)
-print -djpg -r300 Reversal_deflection.jpg
+% print -djpg -r300 Reversal_deflection.jpg
 
 return;
 % The reversal speed should be less than divergence

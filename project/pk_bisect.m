@@ -28,7 +28,7 @@ function [pu,vu] = pk_bisect(ieig,u,M,K,Qip,kbounds)
   Mr = (u/b)^2 * M;
 
   % dynamic pressure
-  qoo = 0.5*Qip.rho*u^2;
+  qoo = 0.5*Qip.rho*u*u;
 
   % upper/lower bounds
   klow = kbounds(ieig);
@@ -45,9 +45,20 @@ function [pu,vu] = pk_bisect(ieig,u,M,K,Qip,kbounds)
     % Your code must compute the scalar variable p corresponding
     % to the eigenvalue with index ieig (argument) and the corresponding
     % complex eigenvector v.
+    
+    % retrive Qk
+    Qk = ipolQk(Qip,k);
+    % Solve eigenvalue problem
+    Kr = qoo*Qk-K;
+    [V,D] = eig(Kr, Mr);
+    phat2 = diag(D);
+    phat = sqrt(phat2);
+    phat = phat .* sign(imag(phat));
+    [psort,ipsort] = sort(imag(phat));
 
-    v =
-    p =
+    v = V(:,ipsort(ieig));
+    p = phat(ipsort(ieig));
+
     imp = imag(p);                 % imaginary part of current p
     if imp > k                     % then k new lower bound
       klow = k;                    % update lower bound

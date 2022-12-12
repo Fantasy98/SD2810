@@ -8,7 +8,7 @@ function plotmode(v)
 % (c) 2016 Dan Borglund <dodde@kth.se> and David Eller <dlr@kth.se>
 
   % constants
-  l = 1.2;
+  l = 1.6;
 
   % dimensions
   ndof = length(v);
@@ -41,14 +41,14 @@ function plotmode(v)
   hold on
     plot(yp, w, 'b',"linewidth",1.5)
     title('Deformation of elastic axis',"fontsize",25)
-    ylabel('Deflection [m]',"fontsize",15)
+    ylabel('Deflection [m]',"fontsize",20)
     box
   hold off
   subplot(2,1,2)
   hold on
     plot(yp, t, 'r',"linewidth",1.5)
     xlabel('Span coordinate [m]',"fontsize",15)
-    ylabel('Twist [deg]',"fontsize",15)
+    ylabel('Twist [deg]',"fontsize",20)
     box
   hold off
   %for save figure
