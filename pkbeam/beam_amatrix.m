@@ -4,7 +4,8 @@ function [Ae] = beam_amatrix(k, le, b, xa)
     % [Ae] = beam_amatrix(k, le, b, xa)
     %
     % Construct unsteady aerodynamic load matrix Ae for a
-    % beam element with length le and semichord b. xa is the
+    % beam element with length le and semichord b. 
+    # xa is the elastic axis location w.r.t mid chord
     % local position of the elastic axis relative the the
     % midchord (xea - xmid).
     %
