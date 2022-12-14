@@ -520,6 +520,8 @@ function [Me] = beam_mmatrix(le, se, mye, Jye)
   Me = Me + triu(Me,1)'; % exploit symmetry for the lower triangular part
 end
 
+
+
 function [Ae] = beam_amatrix(k, le, b, xa)
 % [Ae] = beam_amatrix(k, le, b, xa)
 %

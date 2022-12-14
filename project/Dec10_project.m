@@ -7,6 +7,13 @@
 
 clear all;
 
+# How to use beam_amatrix()
+
+% [Ae] = beam_amatrix(k, le, b, xa)
+# What is xa ? 
+
+
+
 % setup geometry and structural properties
 % number of finite elements requested should be a multiple of 3
 nelem = 24;
@@ -73,6 +80,7 @@ B = eye(3,ndof);
 [M,K,Z,Qip,f,CRv,CRd,s] = labwing(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
 fprintf("Offset s = %.2f m \n",s);
 
+return
 
 % compute divergence speed
 [udiv,zdiv] = divergence(K, Qip);
@@ -80,13 +88,9 @@ fprintf(1,'Divergence speed: %.2f m/s \n', udiv);
 %compute reversal speed
 % [urev,zrev] = reversal(K, Qip, f, CRv, CRd);
 % fprintf(1,'Reversal speed: %.2f m/s \n', urev);
-return;
 
 
-nmode = 3;
-neig = 3
-[Km,Mm,Zm,mQip]=ReduceDim(M,K,Qip,nmode);
-[ucrit,pcrit,zcrit,pconv,uvec] = flutter(Mm,Km,mQip,neig,50);
 
-fprintf(1,'Fluteer speed: %.2f m/s \n', ucrit);
+
+
 

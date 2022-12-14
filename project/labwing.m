@@ -366,6 +366,7 @@ function [Ak] = assemble_aero(geo, k)
   % extract node arrays
   vy = geo.y;
   vb = geo.b;
+  # xea where the nodes are 
   vxea = geo.xea;
   vx = geo.x;
 

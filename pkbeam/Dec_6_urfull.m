@@ -153,7 +153,7 @@ ev = eig(Z'*Q0*Z,Z'*K*Z);
 qdiv = 1/max(ev);
 udiv = sqrt(2*qdiv/Qip.rho)
 
-plot_stress(vtot,l,)
+plot_stress(vtot,l)
 
 
 
