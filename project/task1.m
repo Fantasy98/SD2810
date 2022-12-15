@@ -29,22 +29,26 @@ ba = c*0.225/2; % m
 mhinge = 28e-3;
 
 
-t = c*0.017; %m
-% t = 6e-3
+% thickness is assumed to be 
+t = 6e-4;
+% t = c * .17;
 # Unsure yet
 % rhop = 1963.7; 
-m_wing = 80; %kg in W12C-JARA-0001.pdf P2
-rhop = 0.5*m_wing/(S*t)
-rhop = 1.82e-3/(1e-6) # 1.82g/cm^2
-% Bending and torsional stiffness
-# thickness is assumed to be 0.6mm in loads.pdf-P12
-% In loads.pdf-P12 GK_tot = 158.6*c^3 
-% where c is in mm,
-% Torsion is in Angle/mm in RAD
+% m_wing = 80; %kg in W12C-JARA-0001.pdf P2
+% rhop = 0.5*m_wing/(S*t);
+# Density of carborn fiber -- load.pdf P6 , the results are quite close to previous 
+rhop = 1760;
 
-G = 8600E6
 
-E = 2*G*(1+0.28)
+
+#Bending and torsional stiffness#
+# Assume that the spar has the domiant contribution to both bending and torision
+# The Shear Moduls has been given in load.pdf P9
+G = 8600E6;
+# According to its possion ratio v = 0.21 ~ 0.28, we estimate the Young's Moudles:
+% E = 2*G*(1+0.28);
+# According to spar.pdf P17
+E = 23.9E9;
 
 % definition matrix for discrete point masses to attach
 % All attachment of contorl surface should be assigned as dpm
@@ -71,12 +75,15 @@ dpm(7,:) =[m1 x_coord 160/100];
 % Number of Degree of freedom
 ndof = 3*nnodes;
 % Constrain of first 3 dof
-B = [];  
+B = [];
+B=eye(3,ndof);  
 % retrieve system matrices
-B = eye(3,ndof);
-[M,K,Z,Qip,f,CRv,CRd,GK_a] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
 
-GK_mm = GK_a
+[M,K,Z,Qip,f,CRv,CRd] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
+
+
+% [M,K,Z,Qip,f,CRv,CRd] = labwing(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
+
 
 
 
@@ -85,6 +92,8 @@ GK_mm = GK_a
 % compute divergence speed
 [udiv,zdiv] = divergence(K, Qip);
 fprintf(1,'Divergence speed: %.2f m/s \n', udiv);
+fprintf(1,'1.15 times of maximum speed: %.2f m/s \n', 1.15*350/3.6);
+fprintf("Divergence speed in reference report %.2f m/s \n", 670/3.6);
 %compute reversal speed
 % [urev,zrev] = reversal(K, Qip, f, CRv, CRd);
 % fprintf(1,'Reversal speed: %.2f m/s \n', urev);

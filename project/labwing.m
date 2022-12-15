@@ -1,4 +1,4 @@
-function [M,K,Z,Qip,f,CRv,CRd,s] = labwing(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm)
+function [M,K,Z,Qip,f,CRv,CRd,s,GK] = labwing(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm)
 % [M,K,Z,Qip,f,CRv,CRd] = labwing(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm)
 %
 % Assemble structural system matrices and aerodynamic load interpolation.
@@ -75,7 +75,7 @@ function [M,K,Z,Qip,f,CRv,CRd,s] = labwing(B, l, b, t, ba, mhinge, rhop, E, G, n
   K = (cplate*t^3/3);  % torsion constant of beam section [m^4]
   EI = E*I;            % bending stiffness [Nm^2]
   GK = G*K;            % torsional stiffness [Nm^2]
-
+  fprintf("The GK equals to %.2f\n",GK);
   % finally, setup wing with spanwise constant properties
   cb = ones(nsup, 1);
   geo = new_wing( y, xle*cb, xte*cb, ca, xea*cb, xcm*cb, ...

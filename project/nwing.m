@@ -52,6 +52,7 @@ function [M,K,Z,Qip,f,CRv,CRd,GK] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, ne
 
   % mass and inertia properties
   mp = rhop*chord*t;     % wing plate mass/unit span [kg/m]
+  
   xp = 0;                % plate chordwise center of mass [m]
   Jp = (mp/12)*chord^2;  % plate rotary inertia wrt plate cm [kgm]
 
@@ -66,17 +67,21 @@ function [M,K,Z,Qip,f,CRv,CRd,GK] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, ne
 
   % total distributed properties
   my = mp + md;              % wing distributed mass/unit span [kg/m]
+
+  fprintf("Mass unit span = %.2f kg/m \n",my)
   s = xcm - xea;             % airfoil cm and ea separation [m]
   Jy = Jcm + my*s^2;         % wing rotary inertia wrt ea/unit span [kgm]
 
   % stiffness properties
   cplate = chord - chail;
+  
   I = (cplate*t^3/12); % beam section area moment of inertia [m^4]
-  % K = (cplate*t^3/3); 
-  # According to W12C-JARA reference
-  K = 0.0212 * chord^3 * 0.6e-4; % torsion constant of beam section [m^4]
+  fprintf("Moment of Inertia is %.8E \n",I) 
   EI = E*I;            % bending stiffness [Nm^2]
-  GK = 1.45*G*K;            % torsional stiffness [Nm^2]
+  # According to W12C-JARA reference
+  K = 1.45* 0.0212 * chord^3 * 6e-4; % torsion constant of beam section [m^4], assume the thickness is t = 6mm
+  GK = G*K;            % torsional stiffness [Nm^2]
+  
 
   % finally, setup wing with spanwise constant properties
   cb = ones(nsup, 1);
