@@ -1,4 +1,4 @@
-function [M,K,Z,Qip,f,CRv,CRd,s] = labwing(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm)
+function [M,K,Z,Qip,f,CRv,CRd,GK] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm)
 % [M,K,Z,Qip,f,CRv,CRd] = labwing(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm)
 %
 % Assemble structural system matrices and aerodynamic load interpolation.
@@ -72,9 +72,11 @@ function [M,K,Z,Qip,f,CRv,CRd,s] = labwing(B, l, b, t, ba, mhinge, rhop, E, G, n
   % stiffness properties
   cplate = chord - chail;
   I = (cplate*t^3/12); % beam section area moment of inertia [m^4]
-  K = (cplate*t^3/3);  % torsion constant of beam section [m^4]
+  % K = (cplate*t^3/3); 
+  # According to W12C-JARA reference
+  K = 0.0212 * chord^3 * 0.6e-4; % torsion constant of beam section [m^4]
   EI = E*I;            % bending stiffness [Nm^2]
-  GK = G*K;            % torsional stiffness [Nm^2]
+  GK = 1.45*G*K;            % torsional stiffness [Nm^2]
 
   % finally, setup wing with spanwise constant properties
   cb = ones(nsup, 1);
