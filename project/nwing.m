@@ -77,8 +77,8 @@ function [M,K,Z,Qip,f,CRv,CRd,GK] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, ne
 
   ## Change the value of moment of ineria since we are assuming spar take the deformation
   ## And spar is a box 
-  I = (cplate*t^3/12); 
-  fprintf("Moment of Inertia is %.8E \n",I) 
+  % I = (cplate*t^3/12); 
+  % fprintf("Moment of Inertia is %.8E \n",I) 
   I = 1.4117e+05 * 10^(-12);
   % I = 1.4E-6;% beam section area moment of inertia [m^4]
   fprintf("Moment of Inertia is %.8E \n",I) 

@@ -9,7 +9,7 @@ clear all;
 
 % setup geometry and structural properties
 % number of finite elements requested should be a multiple of 3
-nelem = 24;
+nelem = 9;
 nnodes = nelem + 1;
 
 % lab wing dimensions and properties
@@ -64,21 +64,40 @@ dpm = zeros(npmass,3);
 % Number of Degree of freedom
 ndof = 3*nnodes;
 
+
+
+
+B = []
+[M,K,Z,Qip,f,CRv,CRd] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
+
+
+% e1 = zeros(ndof,1);
+% e1(1:3:end) = 1;
+% B  = zeros(3,ndof);
+% B(1,:) = e1;
+% B(2,2) = 1; B(3,3) = 1;
 B = eye(3,ndof);
 Z = null(B);
 
-[M,K,Z,Qip,f,CRv,CRd] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
 
+ye = linspace(0,l,nelem);
+le = ye(2)-ye(1);
 Ixx = 1.4117e+05 * 10^(-12);
 I = Ixx;
-Pload = -1;
+
+% Pload = -1;
 P = zeros(ndof,1);
 
-P(1:3:end-2) = Pload;
-% P(end) = Pload;
-
+# Simulate distribution force
+P_dis = 1/l;
+P(1:3:end-2) = 0.8*P_dis;
+P(end-11:3:end-2) = 0.6 * P_dis
+% P(3*7+1) = Pload;
+% P(3:3:end) = 501.33;
+% P(end-2) = 1;
+% P(end) = 1;
 P_hat = P' * Z;
-v = K \ P_hat';
+v = (Z' * K * Z) \ P_hat';
 
 
 v = Z * v;
@@ -92,7 +111,9 @@ delta_theory = P(end-2)*l^3 /(3*E*I);
 
 fprintf("The Analytical Solution is %.5f\n",delta_theory);
 
+plot_stress(v,l,b,t,E,G,c)
 
+return
 ############## Plot bending moment and normal stress
 ndof = length(v);
 
@@ -118,10 +139,23 @@ ye = linspace(0,l,nelem);
 le = yp(2)-yp(1);
 w2 = diff(w1)/le;
 t = c * .17;
-Mx = -E * Ixx .* w2';
-sigma = ye'.*Mx /Ixx;
+t = 0.11;
+Mx = E * Ixx .* w2';
+sigma = 0.5*t*Mx /Ixx;
+
+figure(1)
 plot(ye,Mx,"ro-","linewidth",1.5);
 
 figure(2)
 plot(ye,sigma,"bo-","linewidth",1.5);
 
+% return
+K = 1.45* 0.0212 * c^3 * 6e-4; % torsion constant of beam section [m^4], assume the thickness is t = 6mm
+GK = G*K;
+thetap = diff(theta)
+Mt = GK * thetap
+eps = 0.5*t*Mt/K;
+figure(3)
+plot(ye,Mt,"ro-","linewidth",1.5)
+figure(4)
+plot(ye,Mt./ye,"bo-","linewidth",1.5)
