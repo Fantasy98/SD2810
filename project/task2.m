@@ -1,3 +1,4 @@
+
 % lwmain.m
 % Task1 is for implementing the code for validation w
 % Consider a semi-chord wing clamped at the root
@@ -21,11 +22,15 @@ c = 0.64;
 b = c/2 ; % m
 # The alieron span is defined as c*E, E = 0.225 in W12C-JARA-0001.pdf P
 ba = c*0.225/2; % m
+
+
 # mass of hinge need to be figured out 2022/12/12
 # Maybe use the same value as labwing is ok
 mhinge = 28e-3;
+
+
 % thickness is assumed to be 
-t = 6e-3;
+t = 6e-4;
 % t = c * .17;
 # Unsure yet
 % rhop = 1963.7; 
@@ -33,17 +38,23 @@ t = 6e-3;
 % rhop = 0.5*m_wing/(S*t);
 # Density of carborn fiber -- load.pdf P6 , the results are quite close to previous 
 rhop = 1760;
+
+
+
 #Bending and torsional stiffness#
 # Assume that the spar has the domiant contribution to both bending and torision
 # The Shear Moduls has been given in load.pdf P9
 G = 8600E6;
+# According to its possion ratio v = 0.21 ~ 0.28, we estimate the Young's Moudles:
+% E = 2*G*(1+0.28);
+# According to spar.pdf P17
 E = 23.9E9;
+
 % definition matrix for discrete point masses to attach
 % All attachment of contorl surface should be assigned as dpm
 % The format is dpm(i,:) = [mass x_coord y_coord]
 % 7 connection in total
 % From  root to tip = 1:7
-
 npmass = 7 ;
 m1 = (40.33+6.39+2)/1000; %kg
 m2 = (20.06+2*2)/1000; %kg
@@ -59,69 +70,60 @@ dpm(5,:) =[m3 x_coord  4*l/6];
 dpm(6,:) =[m2 x_coord 5*l/6];
 dpm(7,:) =[m1 x_coord l];
 % ....
-dpm = zeros(npmass,3);
+
 % set up linear constraints for clamped wing root
 % Number of Degree of freedom
 ndof = 3*nnodes;
+% Constrain of first 3 dof
+B = [];
 
-B = eye(3,ndof);
-Z = null(B);
+% retrieve system matrices
 
 [M,K,Z,Qip,f,CRv,CRd] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
 
-Ixx = 1.4117e+05 * 10^(-12);
-I = Ixx;
-Pload = -1;
-P = zeros(ndof,1);
-
-P(1:3:end-2) = Pload;
-% P(end) = Pload;
-
-P_hat = P' * Z;
-v = K \ P_hat';
 
 
-v = Z * v;
-% plotmode(v(:,1));
-delta_estimate = v(end-2);
-fprintf("The FEM solution is %.5f \n",delta_estimate);
-% Compute the Inneria
-
-% Deformation
-delta_theory = P(end-2)*l^3 /(3*E*I);
-
-fprintf("The Analytical Solution is %.5f\n",delta_theory);
+e1 = zeros(ndof,1);
+e1(1:3:end) = 1;
+e3 = zeros(ndof,1);
+e3(3:3:end) = 1;
 
 
-############## Plot bending moment and normal stress
-ndof = length(v);
+Q0 = Qip.Qtab(:,:,1);
+# Test at ulitimate load corresponds to the diving speed 
+u = 350/3.6;
+g = 9.81;
+# Load factor = 9 
+nz = 9;
+q = 0.5*Qip.rho* u * u;
+# Consider the clamped wing condition as mentioned in structure test
+% yn = 0.5*l*linspace(-1,1,nnodes);
+% B = zeros(3,ndof);
+% B(1,:) = e1'
 
-nnode = fix(ndof/3);
+% B(2,2:3:end) = 1;
 
-nshape = [1, nnode];
-w = zeros(nshape);
-w1 = zeros(nshape);
-theta = zeros(nshape);
+% B(2,1:3:end) = yn;
 
-for k = 1:nnode
-    w(k) = v(1+3*(k-1)); % nodal deflection
-    w1(k) = v(2+3*(k-1)); % nodal deflection curvature    
-    theta(k) = 180/pi * v(3+3*(k-1)); % nodal twist
-end
+% idof = 3*(nelem/2)+3;
+% B(3,idof) = 1;
+B(1,:) = e1;
+B(2,2) = 1;
+B(3,3) = 1;
+Z = null(B);
 
-we = zeros(nnode*2,1);
-we(1:2:end) =  v(1:3:end); 
-we(2:2:end) =  v(2:3:end-1);
 
-yp = linspace(0.0, l, nnode);
-ye = linspace(0,l,nelem);
-le = yp(2)-yp(1);
-w2 = diff(w1)/le;
-t = c * .17;
-Mx = -E * Ixx .* w2';
-sigma = ye'.*Mx /Ixx;
-plot(ye,Mx,"ro-","linewidth",1.5);
+LHS = [ Z' *(K-q*Q0)*Z  -q*Z'*Q0*e3
+        q*e1'*Q0*Z       q*e1'*Q0*e3];
 
-figure(2)
-plot(ye,sigma,"bo-","linewidth",1.5);
+% Right hand side
+
+RHS = [-nz*g*Z'*M*e1 
+        g*e1'*M*e1];
+
+x = LHS\RHS;
+alfa0 =x(end) 
+vhat = x(1:end-1);
+vtot =  Z*vhat + alfa0*e3;
+
 

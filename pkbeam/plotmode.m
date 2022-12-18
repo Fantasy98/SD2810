@@ -8,7 +8,7 @@ function plotmode(v)
 % (c) 2016 Dan Borglund <dodde@kth.se> and David Eller <dlr@kth.se>
 
   % constants
-  l = 1.6;
+  l = 12.1/2;
 
   % dimensions
   ndof = length(v);
@@ -26,6 +26,7 @@ function plotmode(v)
   for k = 1:nnode
     w(k) = v(1+3*(k-1)); % nodal deflection
     t(k) = 180/pi * v(3+3*(k-1)); % nodal twist
+    % t(k) = v(3+3*(k-1)); % nodal twist
   end
 
   % distinct plot for no deformation
@@ -36,7 +37,7 @@ function plotmode(v)
   end
 
   % Plot modeshape
-  clf
+ 
   subplot(2,1,1)
   hold on
     plot(yp, w, 'b',"linewidth",1.5)

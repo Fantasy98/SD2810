@@ -52,7 +52,6 @@ function [M,K,Z,Qip,f,CRv,CRd,GK] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, ne
 
   % mass and inertia properties
   mp = rhop*chord*t;     % wing plate mass/unit span [kg/m]
-  
   xp = 0;                % plate chordwise center of mass [m]
   Jp = (mp/12)*chord^2;  % plate rotary inertia wrt plate cm [kgm]
 
@@ -75,16 +74,29 @@ function [M,K,Z,Qip,f,CRv,CRd,GK] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, ne
   % stiffness properties
   cplate = chord - chail;
   
-  I = (cplate*t^3/12); % beam section area moment of inertia [m^4]
+
+  ## Change the value of moment of ineria since we are assuming spar take the deformation
+  ## And spar is a box 
+  I = (cplate*t^3/12); 
+  fprintf("Moment of Inertia is %.8E \n",I) 
+  I = 1.4117e+05 * 10^(-12);
+  % I = 1.4E-6;% beam section area moment of inertia [m^4]
   fprintf("Moment of Inertia is %.8E \n",I) 
   EI = E*I;            % bending stiffness [Nm^2]
   # According to W12C-JARA reference
   K = 1.45* 0.0212 * chord^3 * 6e-4; % torsion constant of beam section [m^4], assume the thickness is t = 6mm
   GK = G*K;            % torsional stiffness [Nm^2]
-  
+  fprintf("Torsional Stiffness is %.8E \n",GK);
 
   % finally, setup wing with spanwise constant properties
+  
+  # to pass different EI into new_wing(),the boxes has slightly different shape
+  # So cb should be changed through corresponding shape 
+  # nsup = 4 or 5 is sufficient !
   cb = ones(nsup, 1);
+  % for i=1:nsup 
+  %   cb(i) = EI 
+  % end
   geo = new_wing( y, xle*cb, xte*cb, ca, xea*cb, xcm*cb, ...
                   my*cb, Jy*cb, EI*cb, GK*cb, nelem );
 

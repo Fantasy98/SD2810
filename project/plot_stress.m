@@ -1,41 +1,58 @@
-function plot_stress(v,l)
+function plot_stress(v,l,b,t,E,G)
 #function for plotting the normal stress distribution
 # Input: 
         #v : deformation vector
         #l : length of beam
 
-    b = 0.175;
-    t = 0.004; 
-    E = 31.5E9;
-    G = 5.52E9;
+    % b = 0.175;
+    % t = 0.004; 
+    % E = 31.5E9;
+    % G = 5.52E9;
 
 
     
     ndof = length(v);
     nnode = fix(ndof/3);
     nshape = [1, nnode];
+    
+    # We need elemental deformation! See the equation (59) in the LectureNote
 
+
+   
     % Extract bending and torsion dofs section by section
     w = zeros(nshape);
     theta = zeros(nshape);
     for k = 1:nnode
         w(k) = v(1+3*(k-1)); % nodal deflection
-        w2(k) = v(2+3*(k-1)); % nodal deflection curvature
+        w1(k) = v(2+3*(k-1)); % nodal deflection curvature
+
         
         theta(k) = 180/pi * v(3+3*(k-1)); % nodal twist
     end
 
+    we(1,:) =  w; 
+    we(2,:) = w1;
+    size(we)
     % Compute normal stress along span
     % Moment = -E * I * w'',
     % w'' is the curvature of beam
     % Then the normal stress can be derived as sigma = M * z/I
     % z = 0.5 * t if we only consider the outer part
     yp = linspace(0.0, l, nnode);
-    Ixx= (2*b*t^3)/12;
+    % Ixx= (2*b*t^3)/12;
+    Ixx = 1.228000e-06;
 
-
+    le = yp(2)-yp(1);
+    psi = 0.5
+    Nw2 = [ 12*psi
+            le*(-4 + 6*psi) 
+            6 - 12*psi
+            le*(-2+6*psi)
+            ];
+    
     % delta_theory = P(end-2)*l^3 /(3*E*Ixx)
-
+    
+    w2 = w1 * le * (1-4+3);
     Mx = -E * Ixx .* w2 .*yp;
     sigma = Mx .*0.5*t./Ixx;
     
@@ -63,18 +80,18 @@ function plot_stress(v,l)
     figure(51);
     subplot(2,1,1);
     hold on 
-    plot(yp,tau(end:-1:1),"ro-","linewidth",1.5);
+    plot(yp,tau,"ro-","linewidth",1.5);
     title("Shear Stress Distribution","fontsize",15)
     ylabel("Normal Stress (pa)","fontsize",8)
 
 
     subplot(2,1,2);
-    plot(yp,Tx(end:-1:1),"bs-","linewidth",1.5)
+    plot(yp,Tx,"bs-","linewidth",1.5)
     title("Shear Force Distribution","fontsize",15)
     ylabel("Shear Force (N*m)","fontsize",8)
 
-    figure(52)
-    plotmode(v);
+    % figure(52)
+    % plotmode_multi(v);
 
     % Minimum Safety Factor = Ultimate_stress/ max_Allowed_stress
     % In our case, since the material property is similar to Aluminum, we can assume 

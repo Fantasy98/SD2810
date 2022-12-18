@@ -66,7 +66,7 @@ plotmode(v_mode(:,1));
 delta_estimate = v(end-2);
 fprintf("The FEM solution is %.5f \n",delta_estimate);
 % Compute the Inneria
-I= (2*b*t^3)/12;
+I=  1.4117e+05 * 10^(-12)
 
 % Deformation
 delta_theory = P(end-2)*l^3 /(3*E*I);

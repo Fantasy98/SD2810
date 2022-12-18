@@ -72,6 +72,7 @@ function [M,K,Z,Qip,f,CRv,CRd,s] = labwing(B, l, b, t, ba, mhinge, rhop, E, G, n
   % stiffness properties
   cplate = chord - chail;
   I = (cplate*t^3/12); % beam section area moment of inertia [m^4]
+  fprintf("Moment of Inertia is %.8E \n",I) 
   K = (cplate*t^3/3);  % torsion constant of beam section [m^4]
   EI = E*I;            % bending stiffness [Nm^2]
   GK = G*K;            % torsional stiffness [Nm^2]
