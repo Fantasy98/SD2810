@@ -125,8 +125,10 @@ alfa = L/(q*S*CLalfa);
 et1 = [1 0 0 1 0 0]';
 et3 = [0 0 1 0 0 1]';
 k = 0;
-# Arbitary decide le and b at this stage
-le = 2.644;
+# Span 
+#area fixed
+Stail = 0.86;
+le = 2.15;
 bt = 0.17 
 # xa is the
     % local position of the elastic axis relative the the
@@ -136,21 +138,19 @@ xa = 0;
 xa = -0.1;
 Qetail = beam_amatrix(k, le, bt, xa);
 
-# Surface
-Stail=le*2*bt
 
 #Expected to get 2pi as well
-CLtaila = et1' * Qetail * et3/(Stail)
+CLtaila = et1' * Qetail * et3/(Stail);
 
-Cmtaila = et3' * Qetail * et3/(Stail*2*bt)
+Cmtaila = et3' * Qetail * et3/(Stail*2*bt);
 
-xt = 2;
+xt = 2.644;
 T2 = [  1 -le/2 -xt
         0    1   0  
         0    0   1
         1  le/2  -xt 
         0    1   0 
-        0    0   1]
+        0    0   1];
 
 # Make matrix has same size as Q0
 Qtail = zeros(size(Q0));

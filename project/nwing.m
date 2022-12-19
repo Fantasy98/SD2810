@@ -51,7 +51,17 @@ function [M,K,Z,Qip,f,CRv,CRd,GK] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, ne
   xea = -0.5*chail;
 
   % mass and inertia properties
-  mp = rhop*chord*t;     % wing plate mass/unit span [kg/m]
+  mp = rhop*chord*t; 
+  # The mass per unit lenth of spar, material : carborn fiber
+  % mp_spar = rhop*80*10*2*10^(-6) + rhop*2*1.29*110*10^(-6);% wing plate mass/unit span [kg/m]
+  % # The wing surface material 600g/m^2 , glass fiber 1000g/m^2. consider upper and lower surface
+  
+  % mp_glass =  chord * (0.2*3)*2;
+  % mp_area = 1.2 * chord * t * pi/4;
+  % mp = mp_spar + mp_glass + mp_area;
+
+  fprintf("Mass unit length %.2f \n",mp);
+ 
   xp = 0;                % plate chordwise center of mass [m]
   Jp = (mp/12)*chord^2;  % plate rotary inertia wrt plate cm [kgm]
 
@@ -66,7 +76,7 @@ function [M,K,Z,Qip,f,CRv,CRd,GK] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, ne
 
   % total distributed properties
   my = mp + md;              % wing distributed mass/unit span [kg/m]
-
+  
   fprintf("Mass unit span = %.2f kg/m \n",my)
   s = xcm - xea;             % airfoil cm and ea separation [m]
   Jy = Jcm + my*s^2;         % wing rotary inertia wrt ea/unit span [kgm]
@@ -182,6 +192,7 @@ function [geo] = new_wing(y, xle, xte, ca, xea, xcm, my, Jy, EI, GK, nelem)
 
   % print area (checking)
   area = trapz(yt, xt-xl);
+ 
   fprintf(1, 'Wing area: %.3f m^2\n', area);
 
   % semichord used as reference value

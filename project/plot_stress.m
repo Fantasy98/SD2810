@@ -14,7 +14,7 @@ function plot_stress(v,l,b,t,E,G,c)
     ndof = length(v);
     nnode = fix(ndof/3);
     nshape = [1, nnode];
-    nelem = nnode-1
+    nelem = nnode-1;
     # We need elemental deformation! See the equation (59) in the LectureNote
 
 
@@ -44,24 +44,38 @@ function plot_stress(v,l,b,t,E,G,c)
     w2 = diff(w1)/le;
     
 
+    % t = c * 0.013;
     t = 0.11;
     Mx = E * Ixx .* w2';
     sigma = 0.5*t*Mx /Ixx;
    
 
     figure(50);
+    
+    set(gcf, 'PaperPositionMode', 'manual');
+    set(gcf, 'PaperUnits', 'inches');
+    x0=15;y0=15;width=600;height=400
+    set(gcf,'units','points','position',[x0,y0,width,height])
     subplot(2,1,1);
     hold on 
-    plot(ye,sigma,"ro-","linewidth",1.5);
+    plot(ye,sigma,"ro-","linewidth",1.8);
     title("Normal Stress Distribution","fontsize",15)
     ylabel("Normal Stress (pa)","fontsize",8)
-
+    a = get(gca,'XTickLabel');
+    b = get(gca,'YTickLabel');
+    set(gca,'XTickLabel',a,'fontsize',15)
+    set(gca,'YTickLabel',b,'fontsize',15)
 
     subplot(2,1,2);
-    plot(ye,Mx,"bs-","linewidth",1.5)
+    plot(ye,Mx,"bs-","linewidth",1.8)
     title("Bending Moment Distribution","fontsize",15)
     ylabel("Moment (N*m)","fontsize",8)
+    xlabel('Span coordinate [m]',"fontsize",15)
 
+    a = get(gca,'XTickLabel');
+    b = get(gca,'YTickLabel');
+    set(gca,'XTickLabel',a,'fontsize',15)
+    set(gca,'YTickLabel',b,'fontsize',15)
     
     K = 1.45* 0.0212 * c^3 * 6e-4; % torsion constant of beam section [m^4], assume the thickness is t = 6mm
     GK = G*K;
@@ -71,29 +85,38 @@ function plot_stress(v,l,b,t,E,G,c)
     A = 2*80*110*10^(-6);
     tau = Mt/(2*t*A);
 
-    figure(51);
-    subplot(2,1,1);
-    hold on 
-    plot(ye,tau,"ro-","linewidth",1.5);
-    title("Shear Stress Distribution","fontsize",15)
-    ylabel("Shear Stress (pa)","fontsize",8)
+    % figure(51);
+    % set(gcf, 'PaperPositionMode', 'manual');
+    % set(gcf, 'PaperUnits', 'inches');
+    % subplot(2,1,1);
+    % hold on 
+    % plot(ye,tau,"ro-","linewidth",1.8);
+    % title("Shear Stress Distribution","fontsize",15)
+    % ylabel("Shear Stress (pa)","fontsize",8)
+    % a = get(gca,'XTickLabel');
+    % b = get(gca,'YTickLabel');
+    % set(gca,'XTickLabel',a,'fontsize',18)
+    % set(gca,'YTickLabel',b,'fontsize',18)
 
-
-    subplot(2,1,2);
-    plot(ye,Tx,"bs-","linewidth",1.5)
-    title("Twist Moment Distribution","fontsize",15)
-    ylabel("Twist Moment (N*m)","fontsize",8)
-
+    % subplot(2,1,2);
+    % plot(ye,Tx,"bs-","linewidth",1.8)
+    % title("Twist Moment Distribution","fontsize",15)
+    % ylabel("Twist Moment (N*m)","fontsize",8)
+    % xlabel('Span coordinate [m]',"fontsize",15)
+    % a = get(gca,'XTickLabel');
+    % b = get(gca,'YTickLabel');
+    % set(gca,'XTickLabel',a,'fontsize',18)
+    % set(gca,'YTickLabel',b,'fontsize',18)
     % figure(52)
     % plotmode_multi(v);
 
     % Minimum Safety Factor = Ultimate_stress/ max_Allowed_stress
     % In our case, since the material property is similar to Aluminum, we can assume 
     % Assume the ultimate stress is identical to alumn's 
-    Ultimate = 633E6;
-    factor_normal = Ultimate / max(abs(sigma));
-    factor_shear = Ultimate / max(abs(tau(2:end)));
-    fprintf("Minimum Safety factor of normal stress is %.2f\n", factor_normal)
-    fprintf("Minimum Safety factor of shear stress is %.2f\n", factor_shear)
+    % Ultimate = 633E6;
+    % factor_normal = Ultimate / max(abs(sigma));
+    % factor_shear = Ultimate / max(abs(tau(2:end)));
+    % fprintf("Minimum Safety factor of normal stress is %.2f\n", factor_normal)
+    % fprintf("Minimum Safety factor of shear stress is %.2f\n", factor_shear)
 
 end
