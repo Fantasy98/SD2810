@@ -76,13 +76,13 @@ function plot_stress(v,l,b,t,E,G,c)
     hold on 
     plot(ye,tau,"ro-","linewidth",1.5);
     title("Shear Stress Distribution","fontsize",15)
-    ylabel("Normal Stress (pa)","fontsize",8)
+    ylabel("Shear Stress (pa)","fontsize",8)
 
 
     subplot(2,1,2);
     plot(ye,Tx,"bs-","linewidth",1.5)
-    title("Shear Force Distribution","fontsize",15)
-    ylabel("Shear Force (N*m)","fontsize",8)
+    title("Twist Moment Distribution","fontsize",15)
+    ylabel("Twist Moment (N*m)","fontsize",8)
 
     % figure(52)
     % plotmode_multi(v);

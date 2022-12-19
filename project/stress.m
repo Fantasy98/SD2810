@@ -9,7 +9,7 @@ clear all;
 
 % setup geometry and structural properties
 % number of finite elements requested should be a multiple of 3
-nelem = 9;
+nelem = 12;
 nnodes = nelem + 1;
 
 % lab wing dimensions and properties
@@ -71,12 +71,29 @@ B = []
 [M,K,Z,Qip,f,CRv,CRd] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
 
 
-% e1 = zeros(ndof,1);
-% e1(1:3:end) = 1;
+e1 = zeros(ndof,1);
+e1(1:3:end) = 1;
+
+
+% yn = 0.5*l*linspace(-1,1,nnodes);
+% B = zeros(3,ndof);
+% B(1,:) = e1'
+
+% B(2,2:3:end) = 1;
+
+% B(2,1:3:end) = yn;
+
+% idof = 3*(nelem/2)+3;
+% B(3,idof) = 1;
+
+
+
+
 % B  = zeros(3,ndof);
 % B(1,:) = e1;
 % B(2,2) = 1; B(3,3) = 1;
 B = eye(3,ndof);
+
 Z = null(B);
 
 
@@ -85,16 +102,18 @@ le = ye(2)-ye(1);
 Ixx = 1.4117e+05 * 10^(-12);
 I = Ixx;
 
-% Pload = -1;
+Pload = -1;
 P = zeros(ndof,1);
 
 # Simulate distribution force
-P_dis = 1/l;
-P(1:3:end-2) = 0.8*P_dis;
-P(end-11:3:end-2) = 0.6 * P_dis
+% P_dis = 10727/l;
+P_dis = 10/l;
+P(1:3:end-2) = P_dis
+% P(1:3:end-13) = 0.8*P_dis;
+% P(end-11:3:end-2) = 0.6 * P_dis
 % P(3*7+1) = Pload;
 % P(3:3:end) = 501.33;
-% P(end-2) = 1;
+% P(end-2) = Pload;
 % P(end) = 1;
 P_hat = P' * Z;
 v = (Z' * K * Z) \ P_hat';
@@ -154,7 +173,7 @@ K = 1.45* 0.0212 * c^3 * 6e-4; % torsion constant of beam section [m^4], assume 
 GK = G*K;
 thetap = diff(theta)
 Mt = GK * thetap
-eps = 0.5*t*Mt/K;
+eps = Mt /(2*t*(80E-3 - t)*(110E-3 - t));
 figure(3)
 plot(ye,Mt,"ro-","linewidth",1.5)
 figure(4)
