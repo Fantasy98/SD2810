@@ -1,4 +1,4 @@
-function [urev,zrev] = reversal(K,Qip,f,CRv,CRd)
+function [urev,zrev] = reversal(K,Q,f,CRv,CRd,Z)
 % [urev,zrev] = reversal(dsy, geo)
 %
 % Compute the airpeed at aileron reversal and the deformation
@@ -13,15 +13,15 @@ function [urev,zrev] = reversal(K,Qip,f,CRv,CRd)
 
 % Compute the aerodynamic force considering the control surface deflection
 % Qip.Qtab(:,:,1) corresponding to the static state 
-A = Qip.Qtab(:,:,1) - f*(CRv./CRd);
+A = Q - f*(CRv./CRd);
 % Solve for eigenvalue problem
-[V,D] = eig(A,K);
+[V,D] = eig(Z'*A*Z,Z'*K*Z);
 % Find the maximum eigenvalue whose reverse is ths dynamic pressure
 % and location as well
 [lambda_rev,max_loc] = max(abs(diag(D)));
 qrev = 1/lambda_rev;
 % q = 0.5*rho*u^2
-urev = sqrt(2*qrev/Qip.rho);
+urev = sqrt(2*qrev/1.225);
 zrev = V(:,max_loc);
 
 end

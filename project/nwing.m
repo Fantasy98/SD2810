@@ -80,7 +80,7 @@ function [M,K,Z,Qip,f,CRv,CRd,GK] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, ne
   fprintf("Mass unit span = %.2f kg/m \n",my)
   s = xcm - xea;             % airfoil cm and ea separation [m]
   Jy = Jcm + my*s^2;         % wing rotary inertia wrt ea/unit span [kgm]
-
+  fprintf("The offset is %.2f\n",s);
   % stiffness properties
   cplate = chord - chail;
   
@@ -89,7 +89,7 @@ function [M,K,Z,Qip,f,CRv,CRd,GK] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, ne
   ## And spar is a box 
   % I = (cplate*t^3/12); 
   % fprintf("Moment of Inertia is %.8E \n",I) 
-  I = 1.4117e+05 * 10^(-12);
+  I = 1.6117e+05 * 10^(-12);
   % I = 1.4E-6;% beam section area moment of inertia [m^4]
   fprintf("Moment of Inertia is %.8E \n",I) 
   EI = E*I;            % bending stiffness [Nm^2]

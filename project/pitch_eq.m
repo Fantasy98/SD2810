@@ -24,9 +24,9 @@ b = c/2 ; % m
 ba = c*0.225/2; % m
 # mass of hinge need to be figured out 2022/12/12
 # Maybe use the same value as labwing is ok
-mhinge = 28e-3;
+mhinge = 5*28e-3;
 % thickness is assumed to be 
-t = 5e-3;
+t = 6e-3;
 % t = c * .17;
 # Unsure yet
 % rhop = 1963.7; 
@@ -40,40 +40,45 @@ rhop = 1760;
 G = 8600E6;
 E = 23.9E9;
 
-% definition matrix for discrete point masses to attach
-% All attachment of contorl surface should be assigned as dpm
-% The format is dpm(i,:) = [mass x_coord y_coord]
-% 7 connection in total
-% From  root to tip = 1:7
 npmass = 7 ;
-m1 = 6*(40.33+6.39+2)/1000; %kg
-m2 = 6*(20.06+2*2)/1000; %kg
-m3 = 6*(40.33+2*6.39+2*2)/1000; %kg
+m1 = 3*(40.33+6.39+2)/1000; %kg
+m2 = 3*(20.06+2*2)/1000; %kg
+m3 = 3*(40.33+2*6.39+2*2)/1000; %kg
+
+m_fuselage = 260 - 88;
+m_pilot = 53; 
+m_parachute = 5;
+m_fuse = m_fuselage + m_pilot + m_parachute;
 x_coord = (b-ba);
 dpm = zeros(npmass,3);
 dpm(1,:) = [m1 x_coord 0];
-dpm(2,:) =[m2 x_coord l/6];
-dpm(3,:) =[m3 x_coord  2*l/6];
-dpm(4,:) =[m2 x_coord  3*l/6];
-dpm(5,:) =[m3 x_coord  4*l/6];
-dpm(6,:) =[m2 x_coord 5*l/6];
-dpm(7,:) =[m1 x_coord l];
-dpm(8,:) = [280 0 l/2]
-% ....
+dpm(2,:) =[m2 x_coord 0.5*l/6];
+dpm(3,:) =[m3 x_coord  2*0.5*l/6];
+dpm(4,:) =[m2 x_coord  3*0.5*l/6];
+dpm(5,:) =[m3 x_coord  4*0.5*l/6];
+dpm(6,:) =[m2 x_coord 5*0.5*l/6];
+dpm(7,:) =[m1 x_coord 0.5*l];
+
+dpm(8,:) = [m_fuse 0 l/2];
+
+
+dpm(9,:)  =[m2 x_coord  (l/12 + l/2)];
+dpm(10,:) =[m3 x_coord  (2*l/12 + l/2)];
+dpm(11,:) =[m2 x_coord  (3*l/12 +l/2)];
+dpm(12,:) =[m3 x_coord  (4*l/12 + l/2)];
+dpm(13,:) =[m2 x_coord  (5*l/12 + l/2)];
+dpm(14,:) =[m1 x_coord  l];
+
 
 ndof = 3*nnodes;
-% Since aircraft is maneuvoring, no rigid body conrtain at all
-% No constrain before we get M, K ,Qip 
-B = []
+B = [];
 
 % retrieve system matrices
 [M,K,Z,Qip,f,CRv,CRd] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, nelem, dpm);
 
 
-% First let's compute divergence speed as reference.
-% Divergence speed should be identicall to any case since it's not related to the accelration 
-####################################
-% Obtain static aerodynamic forces
+
+
 Q0 = Qip.Qtab(:,:,1);
 
 
@@ -104,16 +109,7 @@ L = mtot*g;
 
 % Compute Wing Span area
 S = l * b * 2;
-% S = 7.41;
-% should be 2pi
-CLalfa  = e1' * Q0 * e3/(S);
 
-# Shift the ba proportion of b it will change the location of elastic axis
-# for example ba = 0.5*b,  Cma = 0!
-Cma = e3'*Q0*e3/(S*2*b);
-
-
-alfa = L/(q*S*CLalfa)
 
 ######### Caution !!! ##############
 # For computing flutter, Cla = 2*pi is enough 
@@ -123,25 +119,17 @@ alfa = L/(q*S*CLalfa)
 et1 = [1 0 0 1 0 0]';
 et3 = [0 0 1 0 0 1]';
 k = 0;
-
 # Basic dimension
 Stail = 0.86;# Area: fixed
 le = 2.15; # tail span fixed, we need full span length as element length in function
 bt = 0.5*Stail/le; # semi-chord 
-# xa is the
-% local position of the elastic axis relative the the
-% midchord (xea - xmid)
-# We simply assume the Elastic axis at the middle of chord
 xa = 0.05;
-# if bt = 0.2 , xa= -0.1 is at 1/4 c which turns Cmtaila = 0 !!
-# Retrive the aerodynamic force at steady state
 Qetail = beam_amatrix(k, le, bt, xa);
-#Expected to get 2pi as well
 CLtaila = et1' * Qetail * et3/(Stail);
 
 Cmtaila = et3' * Qetail * et3/(Stail*2*bt);
 
-xt = 2;
+xt = 2.67;
 T2 = [  1 -le/2 -xt
         0    1   0  
         0    0   1
@@ -159,33 +147,41 @@ ivec = [3*fix(nnodes/2)+1 : 3*fix(nnodes/2)+3];
 # Give the contribution of tail 
 # Where T1 could be T2'
 Qtail(ivec,ivec) = T2' * Qetail * T2;
-
-CLa_tail = e1' * Qtail * e3/(Stail);
-
-Cma_tail = e3' * Qtail * e3/(Stail*2*b);
-
 # consider the stablizer now  
-Q0 = Q0 + Qtail;
+
+
+Q = Q0 + Qtail;
+
+Qa = zeros(size(Q0));
+for i = 1:ndof
+        Qa(:,i) = f';
+        
+end
+
+
+Q1 = Q0 + Qtail + Qa;
+
+
+
+
+% Qaz = zeros(size(Q0));
+% for i = 1:ndof
+%         Qaz(:,i) = CRv;
+% end
+% Q00 = Q0 + Qtail + Qaz';
+
+% Qa1 = zeros(size(Q0));
+% for i = 1:ndof
+%         Qa1(:,i) = f'.*CRd;
+% end
+% Q11 = Q0 + Qtail + Qa1';
+
+
 CLa = e1' * Q0 * e3/(S);
 Cma = e3' * Q0 * e3/(S*2*b);
 
 CLde = e1' * Qtail * e3/(S);
 Cmde = e3' * Qtail * e3/(S*2*b);
-
-# A way to compute Roll moment and roll deflection 
-R =B(2,:)*Q0 * e3;
-
-A = [CLa CLde 
-        
-        Cma Cmde];
-
-
-rhs = [mtot*g/(q*S)
-        0];
-
-# We want pitching moment has equilibrium so M = 0 
-x_roll = A\rhs;
-
 
 ############# Ineria Relief
 % Make elastic deformation is orthorgonal to the rigid body
@@ -195,43 +191,57 @@ x_roll = A\rhs;
 ndof == rank([B' Z]);
 
 
-u = 200/3.6;
+u = 250/3.6;
 q = 0.5*Qip.rho*u*u;
+
 ####Solve for initial angle at inerial relief condition,
-# without considering momentun equilibrium 
-LHS = [ Z' *(K-q*Q0)*Z  -q*Z'*Q0*e3
-        q*e1'*Q0*Z       q*e1'*Q0*e3];
+# consider pitching moment equilibrium
+ 
+        
+LHS =[  Z'*(K-q*Q1)*Z   -q*Z'*Q*e3    -q*Z'*Q1*e3
+        
+        q*e1'*Q1*Z      q*e1'*Q*e3    q*e1'*Q1*e3
+        % q*e1'*Q1*Z      q*e1'*Q*e3    q*Z'*f
 
-% Right hand side
-# Consider maximum load case nz = +9 
+%        0.07*q*e3'*Q*Z     0.07*q*e3'*Q*e3    (ba+b+0.07)*q*e3'*f ];
+        % (0.5*b-0.07)*q*e3'*Q*Z     (0.5*b-0.07)*q*e3'*Q*e3    (0.5*b-(ba+b+0.07))*q*e3'*f ];
+        q*e3'*Q1*Z/(S*c)         q*e3'*Q*e3/(S*c)         q*e3'*Q1*e3/(S*c) ];
+        % q*e3'*Q1*Z         q*e3'*Q1*e3         CRd ];
+        % q*e3'*Q*Z         q*e3'*Q*e3         -CRd ];
+
 nz = 7;
-RHS = [-nz*g*Z'*M*e1 
-        nz*g*e1'*M*e1];
 
-% Retrieve [vehat
-%          alpha0]
+RHS = [-nz*g*Z'*M*e1
+
+        nz*g*e1'*M*e1
+
+        0];
+
 x = LHS\RHS;
-alfa0 = x(end)*180/pi;
-alfa0 =x(end);
-vhat = x(1:end-1);
-vtot =  Z*vhat + alfa0*e3;
+
+
+
+alfa0  = x(end-1);
+delta0 = x(end);
+vhat   = x(1:end-2);
+vtot =  Z*vhat + alfa0*e3 + delta0*e3;
+va = Z*vhat + alfa0*e3;
 res = K*vtot + M*nz*g*e1 - q*Q0*vtot;
+
 fprintf("Deformation computed, the residual =  %E \n",min(abs(res)))
 rank = rank([B' Z]);
 
-ev = eig(Z'*Q0*Z,Z'*K*Z);
-qdiv = 1/max(ev);
-udiv = sqrt(2*qdiv/Qip.rho);
-fprintf("Divergence speed = %.2f m/s \n",udiv);
+alfa = vtot(end)-delta0;
+alfae = vtot(end)-delta0-alfa0;
 
-twist = vtot(3:3:end);
-aoa = max(twist);
-L = nz * g * mtot;
-CL = L/(q*S);
 fprintf("At speed = %.2f m/s \n",u);
-fprintf("The angle of attack now is = %.2f deg \n",aoa*180/pi)
-fprintf("CL is = %.2f\n",CL)
+fprintf("The angle of attack now is = %.2f deg \n",alfa*180/pi)
+fprintf("The rigid angle of attack  = %.2f deg \n",alfa0*180/pi)
+fprintf("The elastic angle of attack  = %.2f deg \n",alfae*180/pi)
+fprintf("The aileron  is = %.2f deg \n",delta0*180/pi)
+% fprintf("CL is = %.2f\n",CL)
 # Plot the stress distribution 
-plot_stress(vhat,l,b,t,E,G,c)
+plot_stress(vhat,l,b,t,E,G,c);
 
+[urev,zrev] = reversal(K,Q,f,CRv,CRd,Z);
 % K * vtot  + g*M*e1

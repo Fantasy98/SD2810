@@ -102,6 +102,7 @@ P_dis = 10727/l;
 % P(1:3:end-2) = 0.8*P_dis;
 P(1:3:nnodes*0.5*3-2) = 0.8*P_dis;
 P(nnodes*0.5*3+1:3:end-2) = 0.6 * P_dis;
+P(3:3:end) = -1095;
 P_hat = P' * Z;
 v = (Z' * K * Z) \ P_hat';
 
@@ -118,5 +119,5 @@ delta_theory = P(end-2)*l^3 /(3*E*I);
 fprintf("The Analytical Solution is %.5f\n",delta_theory);
 
 plot_stress(Z*v,l,b,t,E,G,c)
-% print -djpg -r500 task1s.jpg
+print -djpg -r0 task1s.jpg
 return;
