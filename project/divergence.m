@@ -1,4 +1,4 @@
-function [udiv,zdiv] = divergence(K,Qip)
+function [udiv,zdiv] = divergence(K,A)
 % [udiv,zdiv] = divergence(K,Qip)
 %
 % Compute the divergence speed and the corresponding
@@ -13,13 +13,13 @@ function [udiv,zdiv] = divergence(K,Qip)
 
   % solve numerically well-posed divergence eigenvalue problem
   % for the critical dynamic pressure qdiv
-  A = Qip.Qtab(:,:,1);
+  % A = Qip.Qtab(:,:,1);
   [Modes,Pressure] = eig(A,K);
   [Lambda_max,indx] = max(abs(diag(Pressure)));
   qDiv = 1/Lambda_max;
 
   fprintf("\nThe divergence pressure is %.2f pa \n",qDiv);
-  air_rho = Qip.rho;
+  air_rho = 1.225;
   UDiv = sqrt(2*qDiv/air_rho);
 
 

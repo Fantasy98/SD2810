@@ -1,4 +1,4 @@
-function plot_stress(v,l,b,t,E,G,c)
+function plot_stress(v)
 #function for plotting the normal stress distribution
 # Input: 
         #v : deformation vector
@@ -8,7 +8,16 @@ function plot_stress(v,l,b,t,E,G,c)
     % t = 0.004; 
     % E = 31.5E9;
     % G = 5.52E9;
+    l =12.1; % m
 
+    c = 0.64;
+# According to the technic report, the main wing is assumed as ellipse with chord = 500mm
+    b = c/2 ; % m
+# The alieron span is defined as c*E, E = 0.225 in W12C-JARA-0001.pdf P
+    t = 6e-3;
+    G = 8600E6;
+    E = 23.9E9;
+    
     Ixx = 1.6117e+05 * 10^(-12);
     
     ndof = length(v);
@@ -79,20 +88,21 @@ function plot_stress(v,l,b,t,E,G,c)
     
     K = 1.45* 0.0212 * c^3 * 6e-4; % torsion constant of beam section [m^4], assume the thickness is t = 6mm
     GK = G*K;
-    r = 110/2000;
-    thetap = diff(theta);
+    r = 120/2000;
+    thetap = diff(theta)*pi/180;
     Mt = GK * thetap;
     Tx = Mt/(r);
-    A = 2*80*110*10^(-6);
+    % A = 2*80*110*10^(-6);
     A = 2 * 54000*0.6*10^(-6);
-    J = pi*(110^4 - 90^4)/2 * 10^(-12)
+    J = pi*(110^4 - 80^4)/32 * 10^(-12)
     % J = 2 * Ixx
-    tau = Mt/A;
+    tau = Mt/J;
+    % tau = Tx/J ;
 
     figure(51);
     set(gcf, 'PaperPositionMode', 'manual');
     set(gcf, 'PaperUnits', 'inches');
-    x0=100;y0=75;width=600;height=400;
+    x0=600;y0=75;width=600;height=400;
     set(gcf,'units','points','position',[x0,y0,width,height])
     subplot(2,1,1);
     hold on 
@@ -105,7 +115,7 @@ function plot_stress(v,l,b,t,E,G,c)
     set(gca,'YTickLabel',b,'fontsize',18)
 
     subplot(2,1,2);
-    plot(ye,Tx,"bs-","linewidth",1.8)
+    plot(ye,Mt,"bs-","linewidth",1.8)
     title("Twist Moment Distribution","fontsize",15)
     ylabel("Twist Moment (N*m)","fontsize",8)
     xlabel('Span coordinate [m]',"fontsize",15)
@@ -120,6 +130,7 @@ function plot_stress(v,l,b,t,E,G,c)
     % Assume the ultimate stress is identical to alumn's 
     Ultimate_norm = 633E6 ;
     Ultimate_shear = 31E6 ;
+    % Ultimate_shear = 2015/J ;
 
     factor_normal = Ultimate_norm / max(abs(sigma));
     factor_shear = Ultimate_shear / max(abs(tau));

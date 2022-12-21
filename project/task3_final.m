@@ -60,7 +60,7 @@ dpm(5,:) =[m3 x_coord  4*0.5*l/6];
 dpm(6,:) =[m2 x_coord 5*0.5*l/6];
 dpm(7,:) =[m1 x_coord 0.5*l];
 
-dpm(8,:) = [m_fuse 0 l/2];
+dpm(8,:) =[m_fuse 0 l/2];
 
 
 dpm(9,:)  =[m2 x_coord  (l/12 + l/2)];
@@ -95,10 +95,22 @@ B(3,idof) = 1;
 
 nz= 7;u= 250/3.6;
 
-Z = null(B);
-
 k=0;
 [Q,vtot,ve,alfa0,delta0] = flight_load(K,M,B,Qip,f,nelem,u,nz,k);
 
+mtot = e1' * M *e1;
+fprintf("Total mass of aircraft is %.2f kg \n",mtot);
 % plotmode(vtot);
-plot_stress(ve,l,b,t,E,G,c);
+
+plot_stress(vtot);
+Z = null(B);
+[udiv,zdiv] = divergence(Z'*K*Z,Z'*Q*Z);
+
+
+
+[urev,zrev] = reversal(K,Q,f,CRv,CRd,Z);
+
+fprintf("Divergence speed %.2f km/h \n",3.6*udiv);
+fprintf("Reversal speed %.2f km/h \n",3.6*urev);
+fprintf("Diving speed %.2f km/h \n",350);
+fprintf("1.15 diving speed %.2f km/h \n",1.15*350);

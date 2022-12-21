@@ -1,5 +1,6 @@
 function [Q,vtot,ve,alfa0,delta0] = flight_load(K,M,B,Qip,f,nelem,u,nz,k)
-# function to compute the deformation of wing, including rigid body: alpha & delta and elastic deformatipn
+#Quasi-Steady aerodynamic 
+#function to compute the deformation of wing, including rigid body: alpha & delta and elastic deformatipn
 # Inputs:
 %  K: unconstrained stiffness matrix
 %  M: unconstrained mass matrix
@@ -20,10 +21,10 @@ function [Q,vtot,ve,alfa0,delta0] = flight_load(K,M,B,Qip,f,nelem,u,nz,k)
 
     nnodes = nelem + 1;
     ndof = 3* nnodes;
-    k_i = k+1;
+    
 # Aerodynamic force based on reduced freq
-    Q0 = Qip.Qtab(:,:,k_i);
-
+    Q0 = ipolQk(Qip,k);
+    
 
 # indices vetors
     e1 = zeros(ndof,1);
@@ -37,42 +38,9 @@ function [Q,vtot,ve,alfa0,delta0] = flight_load(K,M,B,Qip,f,nelem,u,nz,k)
     # Dynamic pressure
     q = 0.5*Qip.rho*u*u;  g = 9.81;
     
-
-    #### Install Horizontal tail aerodynamic matrix
-    # Assume only ONE element == 2 nodes
-    et1 = [1 0 0 1 0 0]';
-    et3 = [0 0 1 0 0 1]';
-
-    # Fixed parameter of HZT in report
-    Stail= 0.86;
-    le = 2.15;
-    bt = 0.5 * Stail/le;
-    # relative loc of elastic axis
-    xa = 0.05;
-    
-    Qetail = beam_amatrix(k,le,bt,xa);
-    # Distance between AC of tail and AC of wing
-    xt  = 2.67;
-    
-    # Tansformation matrix T2 
-    T2 = [  1 -le/2 -xt
-            0    1   0  
-            0    0   1
-            1  le/2  -xt 
-            0    1   0 
-            0    0   1];
-    
-    #Find location of fuselarge nodes
-    Qtail = zeros(size(Q0));
-    ivec = [3*fix(nnodes/2)+1 : 3*fix(nnodes/2)+3];
-
-    # Give the contribution of tail 
-    # Where T1 could be T2'
-    Qtail(ivec,ivec) = T2' * Qetail * T2;
-    # Assemble aerodynamic matrix with tail   
+    Qtail = tail_matrix(k,nelem);
+   
     Q = Q0 + Qtail;
-
-    
     ######### Solve the inertia relief 
 
     LHS = [
@@ -81,6 +49,7 @@ function [Q,vtot,ve,alfa0,delta0] = flight_load(K,M,B,Qip,f,nelem,u,nz,k)
             q*e1'*Q*Z       q*e1'*Q*e3      q*e1'*f
             
             q*e3'*Q0*Z        q*e3'*Q0*e3      q*e3'*f
+            % q*e3'*Q*Z        q*e3'*Q*e3      q*e3'*f
            
             ];
 
@@ -88,7 +57,7 @@ function [Q,vtot,ve,alfa0,delta0] = flight_load(K,M,B,Qip,f,nelem,u,nz,k)
 
     RHS = [-Z'*M*e1*nz*g
 
-            e1'*M*e1*nz*g
+            e1'*M*e1*g*nz
             
             0
             ];
