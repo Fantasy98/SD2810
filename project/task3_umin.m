@@ -75,7 +75,7 @@ u_stall = 70;
 
 S = l * 2*b;
 g  = 9.8;
-nz = 7;
+nz = 5.3;
 L = nz * g * mtot;
 i = 1;
 for u = u_stall:1:u_max
@@ -121,4 +121,4 @@ a = get(gca,'XTickLabel');
 b = get(gca,'YTickLabel');
 set(gca,'XTickLabel',a,'fontsize',20)
 set(gca,'YTickLabel',b,'fontsize',20)
-fprintf("The minumum speed at load factor %.2f is %.2f m/s \n",nz,umin);
+fprintf("The minumum speed at load factor %.2f is %.2f km/h \n",nz,umin);

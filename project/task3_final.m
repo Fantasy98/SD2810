@@ -20,9 +20,9 @@ b = c/2 ; % m
 ba = c*0.225/2; % m
 # mass of hinge need to be figured out 2022/12/12
 # Maybe use the same value as labwing is ok
-mhinge = 28e-3;
+mhinge = 5*28e-3;
 % thickness is assumed to be 
-t = 5e-3;
+t = 6e-3;
 % t = c * .17;
 # Unsure yet
 % rhop = 1963.7; 
@@ -93,11 +93,12 @@ B(2,1:3:end) = yn;
 idof = 3*(nelem/2)+3;
 B(3,idof) = 1;
 
-nz= 7; k= 0;u= 250/3.6;
+nz= 7;u= 250/3.6;
 
 Z = null(B);
 
+k=0;
+[Q,vtot,ve,alfa0,delta0] = flight_load(K,M,B,Qip,f,nelem,u,nz,k);
 
-[Q0,vtot,vhat] = flight_load(K,M,B,Qip,nelem,u,nz,k);
-
-vhat = Z * vhat;
+% plotmode(vtot);
+plot_stress(ve,l,b,t,E,G,c);

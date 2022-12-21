@@ -195,7 +195,7 @@ x_roll = A\rhs;
 ndof == rank([B' Z]);
 
 
-u = 200/3.6;
+u = 173/3.6;
 q = 0.5*Qip.rho*u*u;
 ####Solve for initial angle at inerial relief condition,
 # without considering momentun equilibrium 

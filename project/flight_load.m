@@ -1,24 +1,28 @@
-function [Q0,vtot,vhat] = flight_load(K,M,B,Qip,nelem,u,nz,k)
+function [Q,vtot,ve,alfa0,delta0] = flight_load(K,M,B,Qip,f,nelem,u,nz,k)
 # function to compute the deformation of wing, including rigid body: alpha & delta and elastic deformatipn
 # Inputs:
 %  K: unconstrained stiffness matrix
 %  M: unconstrained mass matrix
 %  B: Constrain matrix
 %  Qtab: aerodynamic force of wing based on strip theory 
+%  f: aileron load vector
 %  nelem: number of elements
-%  nz : load factor 
+%  nz : load factor : for our case could be 5.3, 7, or 9 
 %  u: flight speed
 %  k: reduced frequency
 
-
-
-
+# Outputs:
+%   Q: Assembled aerodynamic matrix consider the horizontal tail
+%   vtot: The total deflection vector size = [1, 3*(nelem+1)]
+%   ve: elastic deflection vector size = [1, 3*(nelem+1)]
+%   alfa0: reference angle of attack
+%   delta0: aileron deflection
 
     nnodes = nelem + 1;
     ndof = 3* nnodes;
-
-# Steady aerodynamic force
-    Q0 = Qip.Qtab(:,:,1);
+    k_i = k+1;
+# Aerodynamic force based on reduced freq
+    Q0 = Qip.Qtab(:,:,k_i);
 
 
 # indices vetors
@@ -36,8 +40,8 @@ function [Q0,vtot,vhat] = flight_load(K,M,B,Qip,nelem,u,nz,k)
 
     #### Install Horizontal tail aerodynamic matrix
     # Assume only ONE element == 2 nodes
-    et1 = [1 0 0 1 0 0];
-    et3 = [0 0 1 0 0 1];
+    et1 = [1 0 0 1 0 0]';
+    et3 = [0 0 1 0 0 1]';
 
     # Fixed parameter of HZT in report
     Stail= 0.86;
@@ -45,18 +49,18 @@ function [Q0,vtot,vhat] = flight_load(K,M,B,Qip,nelem,u,nz,k)
     bt = 0.5 * Stail/le;
     # relative loc of elastic axis
     xa = 0.05;
-
+    
     Qetail = beam_amatrix(k,le,bt,xa);
     # Distance between AC of tail and AC of wing
-    xt  = 2.64;
+    xt  = 2.67;
     
     # Tansformation matrix T2 
     T2 = [  1 -le/2 -xt
-        0    1   0  
-        0    0   1
-        1  le/2  -xt 
-        0    1   0 
-        0    0   1];
+            0    1   0  
+            0    0   1
+            1  le/2  -xt 
+            0    1   0 
+            0    0   1];
     
     #Find location of fuselarge nodes
     Qtail = zeros(size(Q0));
@@ -66,28 +70,40 @@ function [Q0,vtot,vhat] = flight_load(K,M,B,Qip,nelem,u,nz,k)
     # Where T1 could be T2'
     Qtail(ivec,ivec) = T2' * Qetail * T2;
     # Assemble aerodynamic matrix with tail   
-    Q0 = Q0 + Qtail;
+    Q = Q0 + Qtail;
 
     
     ######### Solve the inertia relief 
 
-    LHS = [ Z' *(K-q*Q0)*Z  -q*Z'*Q0*e3
-            q*e1'*Q0*Z       q*e1'*Q0*e3];
+    LHS = [
+            Z'*(K-q*Q)*Z    -q*Z'*Q*e3      -q*Z'*f
+            
+            q*e1'*Q*Z       q*e1'*Q*e3      q*e1'*f
+            
+            q*e3'*Q0*Z        q*e3'*Q0*e3      q*e3'*f
+           
+            ];
 
     % Right hand side
 
-    RHS = [-nz*g*Z'*M*e1 
-            g*e1'*M*e1];
+    RHS = [-Z'*M*e1*nz*g
+
+            e1'*M*e1*nz*g
+            
+            0
+            ];
 
     x = LHS\RHS;
 
     # Extract elastic deformation 
-    vhat = x(1:end-1);
+    vhat = x(1:end-2);
     # Extract angle of attack as rigid body motion
-    alpha0 = x(end);
+    alfa0 = x(end-1);
+    delta0 = x(end);
     # Assemble the deformation vector 
-    vtot = Z*vhat + alpha0 * e3;
-
+    vtot = Z*vhat + alfa0*e3 + delta0*e3;
+    ve = Z*x(1:end-2);
+    
     # Check residual of solution by the equlibrium
     res = K * vtot + M * nz * g* e1 - q * Q0 * vtot;
     fprintf("Computation residual =  %E \n",min(abs(res)))

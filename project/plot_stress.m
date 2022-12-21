@@ -54,7 +54,7 @@ function plot_stress(v,l,b,t,E,G,c)
     
     set(gcf, 'PaperPositionMode', 'manual');
     set(gcf, 'PaperUnits', 'inches');
-    x0=15;y0=15;width=600;height=400;
+    x0=15;y0=75;width=600;height=400;
     set(gcf,'units','points','position',[x0,y0,width,height])
     subplot(2,1,1);
     hold on 
@@ -92,6 +92,8 @@ function plot_stress(v,l,b,t,E,G,c)
     figure(51);
     set(gcf, 'PaperPositionMode', 'manual');
     set(gcf, 'PaperUnits', 'inches');
+    x0=100;y0=75;width=600;height=400;
+    set(gcf,'units','points','position',[x0,y0,width,height])
     subplot(2,1,1);
     hold on 
     plot(ye,tau,"ro-","linewidth",1.8);

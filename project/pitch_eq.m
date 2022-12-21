@@ -100,7 +100,7 @@ Z = null(B);
 mtot = e1' * M * e1;
 
 % Now assume a speed which is lower than the divergence speed
-u = 300/3.6;
+u = 250/3.6;
 q = 0.5*Qip.rho*u*u;
 
 g = 9.81;
@@ -152,14 +152,14 @@ Qtail(ivec,ivec) = T2' * Qetail * T2;
 
 Q = Q0 + Qtail;
 
-Qa = zeros(size(Q0));
-for i = 1:ndof
-        Qa(:,i) = f';
+% Qa = zeros(size(Q0));
+% for i = 1:ndof
+%         Qa(:,i) = f';
         
-end
+% end
 
 
-Q1 = Q0 + Qtail + Qa;
+% Q1 = Q0 + Qtail + Qa;
 
 
 
@@ -198,16 +198,25 @@ q = 0.5*Qip.rho*u*u;
 # consider pitching moment equilibrium
  
         
-LHS =[  Z'*(K-q*Q1)*Z   -q*Z'*Q*e3    -q*Z'*Q1*e3
-        
-        q*e1'*Q1*Z      q*e1'*Q*e3    q*e1'*Q1*e3
-        % q*e1'*Q1*Z      q*e1'*Q*e3    q*Z'*f
+% LHS =[  Z'*(K-q*Q1)*Z   -q*Z'*Q*e3    -q*Z'*Q1*e3
 
-%        0.07*q*e3'*Q*Z     0.07*q*e3'*Q*e3    (ba+b+0.07)*q*e3'*f ];
-        % (0.5*b-0.07)*q*e3'*Q*Z     (0.5*b-0.07)*q*e3'*Q*e3    (0.5*b-(ba+b+0.07))*q*e3'*f ];
-        q*e3'*Q1*Z/(S*c)         q*e3'*Q*e3/(S*c)         q*e3'*Q1*e3/(S*c) ];
-        % q*e3'*Q1*Z         q*e3'*Q1*e3         CRd ];
-        % q*e3'*Q*Z         q*e3'*Q*e3         -CRd ];
+%         q*e1'*Q1*Z      q*e1'*Q*e3    q*e1'*Q1*e3
+%         % q*e1'*Q1*Z      q*e1'*Q*e3    q*Z'*f
+
+% %        0.07*q*e3'*Q*Z     0.07*q*e3'*Q*e3    (ba+b+0.07)*q*e3'*f ];
+%         % (0.5*b-0.07)*q*e3'*Q*Z     (0.5*b-0.07)*q*e3'*Q*e3    (0.5*b-(ba+b+0.07))*q*e3'*f ];
+%         q*e3'*Q1*Z/(S*c)         q*e3'*Q*e3/(S*c)         q*e3'*Q1*e3/(S*c) ];
+%         % q*e3'*Q1*Z         q*e3'*Q1*e3         CRd ];
+%         % q*e3'*Q*Z         q*e3'*Q*e3         -CRd ];
+
+LHS = [
+        Z'*(K-q*Q)*Z    -q*Z'*Q*e3      -q*Z'*f
+
+        q*e1'*Q*Z       q*e1'*Q*e3      q*e1'*f
+
+        q*e3'*Q0*Z       q*e3'*Q0*e3      q*e3'*f
+        ];
+
 
 nz = 7;
 
@@ -215,7 +224,8 @@ RHS = [-nz*g*Z'*M*e1
 
         nz*g*e1'*M*e1
 
-        0];
+        0
+        ];
 
 x = LHS\RHS;
 
@@ -241,7 +251,4 @@ fprintf("The elastic angle of attack  = %.2f deg \n",alfae*180/pi)
 fprintf("The aileron  is = %.2f deg \n",delta0*180/pi)
 % fprintf("CL is = %.2f\n",CL)
 # Plot the stress distribution 
-plot_stress(vhat,l,b,t,E,G,c);
-
-[urev,zrev] = reversal(K,Q,f,CRv,CRd,Z);
-% K * vtot  + g*M*e1
+plot_stress(Z*vhat,l,b,t,E,G,c);
