@@ -55,7 +55,8 @@ function [Q,vtot,ve,alfa0,delta0] = flight_load(K,M,B,Qip,f,nelem,u,nz,k)
 
     % Right hand side
 
-    RHS = [-Z'*M*e1*nz*g
+    RHS = [
+            -Z'*M*e1*nz*g
 
             e1'*M*e1*g*nz
             

@@ -141,7 +141,7 @@ CLtaila = et1' * Qetail * et3/(Stail);
 
 Cmtaila = et3' * Qetail * et3/(Stail*2*bt);
 
-xt = 2;
+xt = 2.67;
 T2 = [  1 -le/2 -xt
         0    1   0  
         0    0   1

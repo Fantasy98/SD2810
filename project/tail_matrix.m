@@ -15,7 +15,7 @@ function [Qtail] = tail_matrix(k,nelem)
     xa = 0.05;
     
     # The reduced frequency is 
-    ke = k*bt/0.32;
+    ke = k*bt/0.32; # 0.32 is semi-chord of wing (b)
     Qetail = beam_amatrix(ke,le,bt,xa);
     # Distance between AC of tail and AC of wing
     xt  = 2.64;
