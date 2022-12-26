@@ -12,7 +12,7 @@ function [Qtail] = tail_matrix(k,nelem)
     le = 2.15;
     bt = 0.5 * Stail/le;
     # relative loc of elastic axis
-    xa = 0.05;
+    xa = 0;
     
     # The reduced frequency is 
     ke = k*bt/0.32; # 0.32 is semi-chord of wing (b)

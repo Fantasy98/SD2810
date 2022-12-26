@@ -21,7 +21,7 @@ function [pu,vu] = pk_bisect(ieig,u,M,K,Qip,kbounds)
 %          and David Eller <dlr@kth.se>
 
   % tolreance for iterative solution of pk-eigenvalue problem
-  ktol = 0.001;
+  ktol = 0.01;
 
   % reduced mass matrix
   b = Qip.bref;

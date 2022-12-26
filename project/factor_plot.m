@@ -90,27 +90,58 @@ B(2,1:3:end) = yn;
 idof = 3*(nelem/2)+3;
 B(3,idof) = 1;
 
-nz=7;u= 350/3.6;
-
-k=0;
-[Q,vtot,ve,alfa0,delta0] = flight_load(K,M,B,Qip,f,nelem,u,nz,k);
-
-mtot = e1' * M *e1;
-fprintf("Total mass of aircraft is %.2f kg \n",mtot);
-
-fprintf("The initial angle of attack is %.2f deg \n",alfa0*180/pi);
-fprintf("The angle of attack is %.2f deg \n",vtot(idof)*180/pi);
-fprintf("The aileron deflection  is %.2f deg \n",delta0*180/pi);
-plot_stress(vtot);
-Z = null(B);
-
-[udiv,zdiv] = divergence(Z'*K*Z,Z'*Q*Z);
+nz=5.3;
+k = 0;
+i = 1;
+for ui = 172:5:350
+    u = ui/3.6;
+    [Q,vtot,ve,alfa0,delta0] = flight_load(K,M,B,Qip,f,nelem,u,nz,k);
+    [SF_n,SF_s] = safety_factor(vtot);
+    SFN5(i) = SF_n;
+    SFS5(i) = SF_s;
+    i = i+1;
+end
 
 
+nz=7;
+k = 0;
+i = 1;
+for ui = 172:5:350
+    u = ui/3.6;
+    [Q,vtot,ve,alfa0,delta0] = flight_load(K,M,B,Qip,f,nelem,u,nz,k);
+    [SF_n,SF_s] = safety_factor(vtot);
+    SFN7(i) = SF_n;
+    SFS7(i) = SF_s;
+    i = i+1;
+end
 
-[urev,zrev] = reversal(K,Q,f,CRv,CRd,Z);
+uall = 172:5:350;
+figure(1)
+set(gcf, 'PaperPositionMode', 'manual');
+set(gcf, 'PaperUnits', 'inches');
+x0=15;y0=75;width=600;height=400;
+set(gcf,'units','points','position',[x0,y0,width,height])
+plot(uall,SFN5,"-ob","linewidth",1.8);
+hold on 
+plot(uall,SFN7,"-og","linewidth",1.8);
+plot(uall,SFS5,"-or","linewidth",1.8);
+plot(uall,SFS7,"-oy","linewidth",1.8);
 
-fprintf("Divergence speed %.2f km/h \n",3.6*udiv);
-fprintf("Reversal speed %.2f km/h \n",3.6*urev);
-fprintf("Diving speed %.2f km/h \n",350);
-fprintf("1.15 diving speed %.2f km/h \n",1.15*350);
+leg = legend({
+                "Normal Stress at +5.3"
+                "Normal Stress at +7"
+                "Shear Stress at +5.3"
+                "Shear Stress at +7"
+
+                    });
+set(leg,"fontsize",15,"location","northwest")
+
+ylab =ylabel("Safety factor","fontsize",8)
+xlab =xlabel("Speed (km/h)","fontsize",8)
+set([xlab,ylab],"fontsize",15)
+a = get(gca,'XTickLabel');
+b = get(gca,'YTickLabel');
+set(gca,'XTickLabel',a,'fontsize',15)
+set(gca,'YTickLabel',b,'fontsize',15)
+
+print -djpg SFfactor.jpg

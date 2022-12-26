@@ -8,7 +8,7 @@ function [ucrit,pcrit,zcrit,pconv,uvec] = flutter(M,K,Qip,neig,iter = 100)
 % Qip : aerodynamic loads interpolation struct
 % neig: number of eigenvector you want
 % (c) 2004-2016 Dan Borglund <dodde@kth.se> and David Eller <dlr@kth.se>
-  u = 0.1; 
+  u = 70/3.6; 
   i = 1;
   % Since we know there are only 2 
   
