@@ -90,7 +90,7 @@ B(2,1:3:end) = yn;
 idof = 3*(nelem/2)+3;
 B(3,idof) = 1;
 
-nz=7;u= 350/3.6;
+nz=9;u= 350/3.6;
 
 k=0;
 [Q,vtot,ve,alfa0,delta0] = flight_load(K,M,B,Qip,f,nelem,u,nz,k);

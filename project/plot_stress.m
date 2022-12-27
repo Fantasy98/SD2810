@@ -125,7 +125,7 @@ function plot_stress(v)
     set(gca,'XTickLabel',a,'fontsize',15)
     set(gca,'YTickLabel',b,'fontsize',15)
 
-    print -djpg Stress7.jpg
+    % print -djpg Stress7.jpg
     % print -djpg Stress5.jpg
     % Minimum Safety Factor = Ultimate_stress/ max_Allowed_stress
     % In our case, since the material property is similar to Aluminum, we can assume 

@@ -75,7 +75,7 @@ u_stall = 70;
 
 S = l * 2*b;
 g  = 9.8;
-nz = 7;
+nz = 5.3;
 L = nz * g * mtot;
 i = 1;
 for u = u_stall:1:u_max
@@ -113,7 +113,7 @@ leg = legend({
         "Minimum Speed"
         });
 set(leg,"fontsize",1,"location","northeast");
-xlb = xlabel("u (m/s)");
+xlb = xlabel("u (km/h)");
 ylb = ylabel("CL");
 set([xlb,ylb],"fontsize",20);
 % axis([14 24]);
@@ -121,5 +121,5 @@ a = get(gca,'XTickLabel');
 b = get(gca,'YTickLabel');
 set(gca,'XTickLabel',a,'fontsize',20)
 set(gca,'YTickLabel',b,'fontsize',20)
- print -djpg umin7.jpg
+ print -djpg umin53.jpg
 fprintf("The minumum speed at load factor %.2f is %.2f km/h \n",nz,umin);
