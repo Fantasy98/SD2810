@@ -14,11 +14,12 @@ function valid_plot(v)
 # According to the technic report, the main wing is assumed as ellipse with chord = 500mm
     b = c/2 ; % m
 # The alieron span is defined as c*E, E = 0.225 in W12C-JARA-0001.pdf P
-    t = 6e-3;
+
     G = 8600E6;
     E = 23.9E9;
     
-    Ixx = 1.6117e+05 * 10^(-12);
+    % Ixx = 1.6117e+05 * 10^(-12);
+    Ixx = 1.85E-5;
     
     ndof = length(v);
     nnode = fix(ndof/3);
@@ -53,12 +54,15 @@ function valid_plot(v)
     w2 = diff(w1)/le;
     
 
-    t = c * 0.01;
+    t = c * 0.17;
+    % t = 115e-3;
     r = 2.6723;
-    Mx = 1.01*E * Ixx .* w2';
+    % Mx = 1.01*E * Ixx .* w2';
+    Mx = E * Ixx .* w2';
     Z = Mx /(r) ;
     fprintf("Maximum Bending moment %.2f \n",max(Mx));
     fprintf("Maximum Shear Force %.2f \n",max(Z));
+    % sigma = 0.5*t*Mx /Ixx;
     sigma = 0.5*t*Mx /Ixx;
    
 
@@ -91,7 +95,7 @@ function valid_plot(v)
 
     print -djpg StressValid.jpg
 
-    Ultimate_norm = 633E6 ;
+    Ultimate_norm = 208E6 ;
     factor_normal = Ultimate_norm / max(abs(sigma));
     fprintf("Minimum Safety factor of normal stress is %.2f\n", factor_normal)
 end

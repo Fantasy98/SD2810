@@ -49,7 +49,7 @@ function [M,K,Z,Qip,f,CRv,CRd,GK] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, ne
   xte = +b;
   ca = chail*ones(nsup, 1);
   xea = -0.5*chail;
-
+  xea
   % mass and inertia properties
   mp = rhop*chord*t; 
   # The mass per unit lenth of spar, material : carborn fiber
@@ -71,7 +71,8 @@ function [M,K,Z,Qip,f,CRv,CRd,GK] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, ne
   Jd = 0;                    % neglect rotary inertia [kgm]
 
   % center of distributed mass and rotary inertia
-  xcm = (mp*xp+md*xd) / (mp+md);               % center of distributed mass
+  xcm = (mp*xp+md*xd) / (mp+md);   
+  xcm            % center of distributed mass
   Jcm = Jp+mp*(xp-xcm)^2 + Jd+md*(xd-xcm)^2;   % rotary inertia wrt cm [kgm]
 
   % total distributed properties
@@ -89,10 +90,11 @@ function [M,K,Z,Qip,f,CRv,CRd,GK] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, ne
   ## And spar is a box 
   % I = (cplate*t^3/12); 
   % fprintf("Moment of Inertia is %.8E \n",I) 
-  I = 1.6117e+05 * 10^(-12);
-  % I = 1.4E-6;% beam section area moment of inertia [m^4]
+  % I = 1.6117e+05 * 10^(-12);
+  I = 1.6E-5;% beam section area moment of inertia [m^4]
   fprintf("Moment of Inertia is %.8E \n",I) 
   EI = E*I;            % bending stiffness [Nm^2]
+  EI
   # According to W12C-JARA reference
   K = 1.45* 0.0212 * chord^3 * 6e-4; % torsion constant of beam section [m^4], assume the thickness is t = 6mm
   GK = G*K;            % torsional stiffness [Nm^2]

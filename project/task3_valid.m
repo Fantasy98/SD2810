@@ -38,7 +38,7 @@ E = 23.9E9;
 % The format is dpm(i,:) = [mass x_coord y_coord]
 % 7 connection in total
 % From  root to tip = 1:7
-npmass = 15 ;
+npmass = 7 ;
 m1 = 3*(40.33+6.39+2)/1000; %kg
 m2 = 3*(20.06+2*2)/1000; %kg
 m3 = 3*(40.33+2*6.39+2*2)/1000; %kg
@@ -60,13 +60,12 @@ dpm(7,:) =[m1 x_coord 0.5*l];
 dpm(8,:) =[m_fuse 0 l/2];
 
 
-dpm(9,:)  =[m1 x_coord  (l/12 + l/2)];
-dpm(10,:)  =[m2 x_coord  (l/12 + l/2)];
-dpm(11,:) =[m3 x_coord  (2*l/12 + l/2)];
-dpm(12,:) =[m2 x_coord  (3*l/12 +l/2)];
-dpm(13,:) =[m3 x_coord  (4*l/12 + l/2)];
-dpm(14,:) =[m2 x_coord  (5*l/12 + l/2)];
-dpm(15,:) =[m1 x_coord  l];
+dpm(9,:)  =[m2 x_coord  (l/12 + l/2)];
+dpm(10,:) =[m3 x_coord  (2*l/12 + l/2)];
+dpm(11,:) =[m2 x_coord  (3*l/12 +l/2)];
+dpm(12,:) =[m3 x_coord  (4*l/12 + l/2)];
+dpm(13,:) =[m2 x_coord  (5*l/12 + l/2)];
+dpm(14,:) =[m1 x_coord  l];
 
 ndof = 3*nnodes;
 % Since aircraft is maneuvoring, no rigid body conrtain at all
@@ -89,12 +88,14 @@ B(1,:) = e1';
 B(2,2:3:end) = 1;
 B(2,1:3:end) = yn;
 idof = 3*(nelem/2)+3;
-B(3,:) = e3';
 % B(3,idof) = 1;
+B(3,:) = e3';
 
-nz=9;
-u= 350/3.6;
-% u = 30;
+
+
+
+nz=9;u= 350/3.6;
+
 k=0;
 [Q,vtot,ve,alfa0,delta0] = flight_load(K,M,B,Qip,f,nelem,u,nz,k);
 
@@ -103,8 +104,8 @@ fprintf("Total mass of aircraft is %.2f kg \n",mtot);
 
 fprintf("The initial angle of attack is %.2f deg \n",alfa0*180/pi);
 fprintf("The angle of attack is %.2f deg \n",vtot(idof)*180/pi);
-fprintf("The elevator deflection  is %.2f deg \n",delta0*180/pi);
-plot_stress(vtot);
+fprintf("The aileron deflection  is %.2f deg \n",delta0*180/pi);
+% plot_stress(vtot);
 Z = null(B);
 
 [udiv,zdiv] = divergence(Z'*K*Z,Z'*Q*Z);

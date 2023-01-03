@@ -44,11 +44,11 @@ function [Q,vtot,ve,alfa0,delta0] = flight_load(K,M,B,Qip,f,nelem,u,nz,k)
     ######### Solve the inertia relief 
 
     LHS = [
-            Z'*(K-q*Q0)*Z    -q*Z'*Q0*e3      zeros(ndof-3,1)
+            Z'*(K-q*Q0)*Z    -q*Z'*Q0*e3     
             
-            q*e1'*Q0*Z       q*e1'*Q0*e3      q*e1'*Qtail*e3
-
-            q*e3'*Q0*Z        q*e3'*Q0*e3      q*e3'*Qtail*e3
+            q*e1'*Q0*Z       q*e1'*Q0*e3     
+     
+            % q*e3'*Q*Z        q*e3'*Q*e3      q*e3'*f
            
             ];
 
@@ -59,21 +59,29 @@ function [Q,vtot,ve,alfa0,delta0] = flight_load(K,M,B,Qip,f,nelem,u,nz,k)
 
             e1'*M*e1*g*nz
             
-            0
+        
             ];
 
     x = LHS\RHS;
 
     # Extract elastic deformation 
-    vhat = x(1:end-2);
+    vhat = x(1:end-1);
     # Extract angle of attack as rigid body motion
-    alfa0 = x(end-1);
-    delta0 = x(end);
+    alfa0 = x(end);
+    delta0 = -5*pi/180;
     # Assemble the deformation vector 
-    vtot = Z*vhat + alfa0*e3 + delta0*e3;
-    ve = Z*x(1:end-2);
+    vtot = Z*vhat + alfa0*e3;
+ 
+    ve = Z*x(1:end-1);
     
     # Check residual of solution by the equlibrium
-    res = K * vtot + M * nz * g* e1 - q * Q0 * vtot;
-    fprintf("Computation residual =  %E \n",min(abs(res)))
+    % res = K * vtot + M * nz * g* e1 - q * Q0 * vtot;
+    % fprintf("Computation residual =  %E \n",min(abs(res)))
+
+
+
+
+
+
+
 end

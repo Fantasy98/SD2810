@@ -53,7 +53,7 @@ yn = 0.5*l*linspace(-1,1,nnodes);idof = 3*(nelem/2)+3;B = zeros(3,ndof);
 B(1,:) = e1';
 B(2,2:3:end) = 1;
 B(2,1:3:end) = yn;
-B(3,idof) = 1;
+B(3,:) = e3';
 
 Z = null(B);
 nz=7;u= 350/3.6;
