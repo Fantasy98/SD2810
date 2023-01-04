@@ -49,17 +49,8 @@ function [M,K,Z,Qip,f,CRv,CRd,GK] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, ne
   xte = +b;
   ca = chail*ones(nsup, 1);
   xea = -0.5*chail;
-  xea
   % mass and inertia properties
   mp = rhop*chord*t; 
-  # The mass per unit lenth of spar, material : carborn fiber
-  % mp_spar = rhop*80*10*2*10^(-6) + rhop*2*1.29*110*10^(-6);% wing plate mass/unit span [kg/m]
-  % # The wing surface material 600g/m^2 , glass fiber 1000g/m^2. consider upper and lower surface
-  
-  % mp_glass =  chord * (0.2*3)*2;
-  % mp_area = 1.2 * chord * t * pi/4;
-  % mp = mp_spar + mp_glass + mp_area;
-
   fprintf("Mass unit length %.2f \n",mp);
  
   xp = 0;                % plate chordwise center of mass [m]
@@ -90,7 +81,6 @@ function [M,K,Z,Qip,f,CRv,CRd,GK] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, ne
   ## And spar is a box 
   % I = (cplate*t^3/12); 
   % fprintf("Moment of Inertia is %.8E \n",I) 
-  % I = 1.6117e+05 * 10^(-12);
   I = 1.6E-5;% beam section area moment of inertia [m^4]
   fprintf("Moment of Inertia is %.8E \n",I) 
   EI = E*I;            % bending stiffness [Nm^2]
@@ -106,9 +96,7 @@ function [M,K,Z,Qip,f,CRv,CRd,GK] = nwing(B, l, b, t, ba, mhinge, rhop, E, G, ne
   # So cb should be changed through corresponding shape 
   # nsup = 4 or 5 is sufficient !
   cb = ones(nsup, 1);
-  % for i=1:nsup 
-  %   cb(i) = EI 
-  % end
+ 
   geo = new_wing( y, xle*cb, xte*cb, ca, xea*cb, xcm*cb, ...
                   my*cb, Jy*cb, EI*cb, GK*cb, nelem );
 

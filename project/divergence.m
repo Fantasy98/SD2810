@@ -15,9 +15,13 @@ function [udiv,zdiv] = divergence(K,A)
   % for the critical dynamic pressure qdiv
   % A = Qip.Qtab(:,:,1);
   [Modes,Pressure] = eig(A,K);
+  
   [Lambda_max,indx] = max(abs(diag(Pressure)));
+  
+  % [Lambda_max,indx] = max(abs(Pressure));
+  
   qDiv = 1/Lambda_max;
-
+  
   fprintf("\nThe divergence pressure is %.2f pa \n",qDiv);
   air_rho = 1.225;
   UDiv = sqrt(2*qDiv/air_rho);

@@ -78,6 +78,10 @@ B = []
 
 e1 = zeros(ndof,1);
 e1(1:3:end) = 1;
+
+e2 = zeros(ndof,1);
+e2(2:3:end) = 1;
+
 e3 = zeros(ndof,1);
 e3(3:3:end) = 1;
 

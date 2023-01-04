@@ -59,7 +59,7 @@ function [kbounds] = pk_bounds(u,M,K,Qip,neig)
     end
 
     % check if k is sane
-    if k > 100.0
+    if k > 1000.0 # default = 100
       error('pk_bounds failed: unreasonable reduced ferquency.');
     end
   end

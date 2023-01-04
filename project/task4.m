@@ -9,7 +9,7 @@ nnodes = nelem + 1;
 % lab wing dimensions and properties
 # Semi-span
 l =12.1; % m
-% S = 7.41/2; % m^2
+S = 7.41; % m^2
 c = 0.64;
 # According to the technic report, the main wing is assumed as ellipse with chord = 500mm
 b = c/2 ; % m
@@ -57,7 +57,7 @@ dpm(5,:) =[m3 x_coord  4*0.5*l/6];
 dpm(6,:) =[m2 x_coord 5*0.5*l/6];
 dpm(7,:) =[m1 x_coord 6*0.5*l/6];
 
-dpm(8,:) =[m_fuse -0.1 l/2];
+dpm(8,:) =[m_fuse 0.1 l/2];
 
 dpm(9,:)  =[m1 x_coord  (l/12 + l/2)];
 dpm(10,:)  =[m2 x_coord  (l/12 + l/2)];
@@ -93,8 +93,8 @@ idof = 3*(nelem/2)+3;
 B(3,:) = e3';
 % B(3,idof) = 1;
 
-nz=7;
-u= 350/3.6;
+nz=1;
+u= 30;
 % u = 30;
 k=0;
 [Q,vtot,ve,alfa0,delta0] = flight_load(K,M,B,Qip,f,nelem,u,nz,k);
@@ -106,7 +106,7 @@ fprintf("The initial angle of attack is %.2f deg \n",alfa0*180/pi);
 fprintf("The angle of attack is %.2f deg \n",vtot(idof)*180/pi);
 fprintf("The elevator deflection  is %.2f deg \n",delta0*180/pi);
 
-plot_stress(vtot);
+% plot_stress(vtot);
 
 B = zeros(3,ndof);
 B(1,:) = e1';
@@ -115,9 +115,27 @@ B(2,1:3:end) = yn;
 idof = 3*(nelem/2)+3;
 B(3,:) = e3';
 
-Z = null(B);
+Z1 = null(B);
 
-[udiv,zdiv] = divergence(Z'*K*Z,Z'*Qip.Qtab(:,:,1)*Z);
+
+B = zeros(3,ndof);
+B(1,:) = e1';
+B(2,2:3:end) = 1;
+B(2,1:3:end) = yn;
+idof = 3*(nelem/2)+3;
+B(3,idof) =1;
+
+Z2 = null(B);
+
+Qw = Qip.Qtab(:,:,1);
+Qt = tail_matrix(0,nelem);
+Q = Qw + Qt;
+[udiv,zdiv] = divergence(Z1'*K*Z1,Z1'*Q*Z1);
+plotmode(Z2*zdiv)
+
+
+CL_d = e1'*Qt*e3/(S)
+Cm_d = e3'*Qt*e3/(S*c)
 
 
 

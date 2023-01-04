@@ -37,19 +37,32 @@ function plotmode(v)
 
   % Plot modeshape
   clf
+  set(gcf, 'PaperPositionMode', 'manual');
+  set(gcf, 'PaperUnits', 'inches');
+  x0=15;y0=75;width=600;height=400;
+  set(gcf,'units','points','position',[x0,y0,width,height])
   subplot(2,1,1)
   hold on
-    plot(yp, w, 'b',"linewidth",1.5)
+    plot(yp, w, 'b',"linewidth",2.5)
     title('Deformation of elastic axis',"fontsize",25)
-    ylabel('Deflection [m]',"fontsize",20)
+    ylabel('Deflection [m]',"fontsize",22)
     box
+    a = get(gca,'XTickLabel');
+    b = get(gca,'YTickLabel');
+    set(gca,'XTickLabel',a,'fontsize',15)
+    set(gca,'YTickLabel',b,'fontsize',15)
+
   hold off
   subplot(2,1,2)
   hold on
-    plot(yp, t, 'r',"linewidth",1.5)
-    xlabel('Span coordinate [m]',"fontsize",15)
-    ylabel('Twist [deg]',"fontsize",20)
+    plot(yp, t, 'r',"linewidth",2.5)
+    xlabel('Span coordinate [m]',"fontsize",20)
+    ylabel('Twist [deg]',"fontsize",22)
     box
+    a = get(gca,'XTickLabel');
+    b = get(gca,'YTickLabel');
+    set(gca,'XTickLabel',a,'fontsize',15)
+    set(gca,'YTickLabel',b,'fontsize',15)
   hold off
   %for save figure
   %print -djpg Modeshape.jpg
